@@ -5,15 +5,14 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 public class TimerViewModel extends ViewModel{
+    private MutableLiveData<Integer> time;
 
-    private final MutableLiveData<String> mText;
-
-    public TimerViewModel() {
-        mText = new MutableLiveData<>();
-        mText.setValue("This is timer fragment");
+    public MutableLiveData<Integer> getTime() {
+        if(time==null){
+            time = new MutableLiveData<>();
+            time.setValue(25);
+        }
+        return time;
     }
 
-    public LiveData<String> getText() {
-        return mText;
-    }
 }
