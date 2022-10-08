@@ -48,4 +48,11 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:30.4.1')
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-database'
+
+    // Butterknife
+    implementation'com.jakewharton:butterknife:10.2.3'
+    annotationProcessor'com.jakewharton:butterknife-compiler:10.2.3'
+
+    // calender dependency
+    implementation 'com.haibin:calendarview:3.6.8'
 }

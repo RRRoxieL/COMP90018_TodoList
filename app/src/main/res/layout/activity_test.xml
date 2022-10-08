@@ -4,16 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomeActivity"
+    tools:context=".TestActivity"
     android:orientation="vertical">
 
-    <TextView
+    <Button
+        android:id="@+id/btn_homeTest"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Home Activity"
-        android:gravity="center"/>
+        android:text="home test"/>
 
-    <CalendarView
+    <Button
+        android:id="@+id/btn_calenderTest"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:text="calenderTest"/>
+
 </LinearLayout>

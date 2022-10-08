@@ -4,16 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomeActivity"
+    tools:context=".CalenderActivity"
     android:orientation="vertical">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Home Activity"
+        android:text="Calender Activity"
         android:gravity="center"/>
 
     <CalendarView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
+
 </LinearLayout>
