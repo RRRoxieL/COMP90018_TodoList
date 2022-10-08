@@ -2,6 +2,7 @@ package com.example.todolist;
 
 import android.os.Bundle;
 
+import com.example.todolist.ui.timer.TimerViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,4 +32,5 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
     }
+
 }
