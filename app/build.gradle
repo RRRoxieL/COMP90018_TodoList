@@ -8,8 +8,8 @@ android {
 
     defaultConfig {
         applicationId "com.example.todolist"
-        minSdk 22
-        targetSdk 33
+        minSdk 21
+        targetSdk 32
         versionCode 1
         versionName "1.0"
 
@@ -54,5 +54,5 @@ dependencies {
     annotationProcessor'com.jakewharton:butterknife-compiler:10.2.3'
 
     // calender dependency
-    implementation 'com.haibin:calendarview:3.6.8'
+    // implementation 'com.haibin:calendarview:3.6.8'
 }
