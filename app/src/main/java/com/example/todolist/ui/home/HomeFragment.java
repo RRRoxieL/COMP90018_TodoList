@@ -1,6 +1,7 @@
 package com.example.todolist.ui.home;
 
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -88,6 +89,9 @@ public class HomeFragment extends Fragment {
     private LinearLayout createEventView(){
         LinearLayout.LayoutParams lp;
 
+        // 信息中的标题
+        TextView title = new TextView(getContext());
+
         // 事件主体
         LinearLayout event =  new LinearLayout(getContext());
         event.setOrientation(LinearLayout.HORIZONTAL);
@@ -100,11 +104,21 @@ public class HomeFragment extends Fragment {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked){
                     // 选中（已完成），背景为灰色
-                    event.setBackgroundColor(Color.parseColor("#d1d1e0"));
+                    event.setBackgroundColor(Color.parseColor("#cccccc"));
+                    title.setTextColor(Color.parseColor("#999999"));
+                    // 添加删除线
+                    title.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);  //中划线，会有锯齿
+                    title.getPaint().setAntiAlias(true);
                 } else {
                     // 没选中（未完成），背景为蓝色
                     event.setBackgroundColor(Color.parseColor("#00ffff"));
+                    title.setTextColor(Color.parseColor("#000000"));
+                    // 清除删除线
+                    title.getPaint().setFlags(0);
+                    title.invalidate();
                 }
+                // 重新设置字体加粗
+                title.getPaint().setFakeBoldText(true);
             }
         });
         lp = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -117,9 +131,10 @@ public class HomeFragment extends Fragment {
         info.setOrientation(LinearLayout.VERTICAL);
 
         // 事件标题
-        TextView title = new TextView(getContext());
         title.setText("title"+i);
+        title.setTextColor(Color.parseColor("#000000"));
         title.getPaint().setFakeBoldText(true);
+
         lp = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         lp.topMargin=20;
