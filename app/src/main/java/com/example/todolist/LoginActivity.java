@@ -18,21 +18,11 @@ public class LoginActivity extends AppCompatActivity {
     Button loginBtn;
     Button registerBtn;
 
-    @BindView(R.id.btn_test)
-    Button test;
-
-    @OnClick(R.id.btn_test)
-    public void onClick(){
-        Intent intent =  new Intent(getApplicationContext(),TestActivity.class);
-        startActivity(intent);
-    }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        ButterKnife.bind(this);
 
 //        loginBtn = findViewById(R.id.btn_login);
 //        loginBtn.setOnClickListener(new View.OnClickListener() {

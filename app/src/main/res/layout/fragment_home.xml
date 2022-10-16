@@ -7,15 +7,34 @@
     tools:context=".ui.home.HomeFragment"
     android:orientation="vertical">
 
-    <ScrollView
+    <LinearLayout
+        android:id="@+id/titleLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/teal_200">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Title part" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Title info" />
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/titleLayout">
         <LinearLayout
             android:id="@+id/eventLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_alignParentTop="true">
+            android:orientation="vertical">
             <TextView
                 android:id="@+id/text_home"
                 android:layout_width="match_parent"
@@ -25,11 +44,12 @@
                 android:layout_marginEnd="8dp"
                 android:text="Home fragment"
                 android:textAlignment="center"
-                android:textSize="20sp"/>
+                android:textSize="20sp"
+                android:visibility="gone"/>
 
             <LinearLayout
                 android:id="@+id/eventSample"
-                android:visibility="visible"
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
@@ -54,7 +74,6 @@
                         android:layout_weight="1"/>
                 </LinearLayout>
             </LinearLayout>
-
         </LinearLayout>
     </ScrollView>
 

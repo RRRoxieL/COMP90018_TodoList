@@ -4,7 +4,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CalendarView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -26,6 +28,15 @@ public class CalendarFragment extends Fragment {
 
         final TextView textView = binding.textCalendar;
         calendarViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+
+        CalendarView calendar = binding.Calender;
+        calendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+            @Override
+            public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
+                Toast.makeText(getContext(),"You selected :"+dayOfMonth+"/"+month+"/"+year,Toast.LENGTH_SHORT).show();
+            }
+        });
+
         return root;
     }
 
