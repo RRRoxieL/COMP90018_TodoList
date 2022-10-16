@@ -15,7 +15,11 @@
         android:id="@+id/navigation_calendar"
         android:name="com.example.todolist.ui.calendar.CalendarFragment"
         android:label="@string/title_calendar"
-        tools:layout="@layout/fragment_calendar" />
+        tools:layout="@layout/fragment_calendar" >
+        <action
+            android:id="@+id/action_navigation_calendar_to_navigation_date"
+            app:destination="@id/navigation_date" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_timer"
@@ -34,5 +38,15 @@
         android:name="com.example.todolist.ui.profile.ProfileFragment"
         android:label="@string/title_profile"
         tools:layout="@layout/fragment_profile" />
+
+    <fragment
+        android:id="@+id/navigation_date"
+        android:name="com.example.todolist.ui.calendar.DateFragment"
+        android:label="date"
+        tools:layout="@layout/fragment_date" >
+        <action
+            android:id="@+id/action_navigation_date_to_navigation_calendar"
+            app:destination="@id/navigation_calendar" />
+    </fragment>
 
 </navigation>
