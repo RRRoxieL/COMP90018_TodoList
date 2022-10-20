@@ -8,13 +8,13 @@
         <entry key="app/src/main/res/drawable/ic_analysis.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_timer.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.2553756713867188" />
         <entry key="app/src/main/res/layout/fragment_analysis.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_blank.xml" value="0.11944444444444445" />
         <entry key="app/src/main/res/layout/fragment_calendar.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_login.xml" value="0.1671195652173913" />
-        <entry key="app/src/main/res/layout/fragment_profile.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/fragment_profile.xml" value="0.29077453613281257" />
         <entry key="app/src/main/res/layout/fragment_register.xml" value="0.32837219238281257" />
         <entry key="app/src/main/res/layout/fragment_time_picker_dialog.xml" value="0.20200368029770774" />
         <entry key="app/src/main/res/layout/fragment_timer.xml" value="0.242669677734375" />
