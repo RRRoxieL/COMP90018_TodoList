@@ -53,7 +53,7 @@ public class Task implements Comparable<Task>, Serializable {
 
 
 
-    private long ID;
+    private String ID;
     private int hour;
     private int minute;
     private String name;
@@ -66,7 +66,7 @@ public class Task implements Comparable<Task>, Serializable {
         if(IDGENERATOR==0){
             IDGENERATOR = TomToolkit.readID(activity);
         }
-        this.ID = IDGENERATOR++;
+        this.ID = String.valueOf(IDGENERATOR++);
         this.hour = hour;
         this.minute = minute;
         this.name = name;
@@ -151,14 +151,11 @@ public class Task implements Comparable<Task>, Serializable {
         this.picPath = picPath;
     }
 
-    public long getID() {
-        if(ID==0){
-            this.ID = IDGENERATOR++;
-        }
+    public String getID() {
         return ID;
     }
 
-    public void setID(long ID) {
+    public void setID(String ID) {
         this.ID = ID;
     }
 }

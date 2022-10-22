@@ -9,7 +9,7 @@ public class DateTask implements Serializable{
 
 
     private Date date;
-    private HashMap<Long,Task> tasks;
+    private HashMap<String,Task> tasks;
 
     public DateTask(Date date){
         this.date = date;
@@ -28,7 +28,7 @@ public class DateTask implements Serializable{
         }
     }
 
-    public boolean deleteTask(Long id){
+    public boolean deleteTask(String id){
         return tasks.remove(id)!=null?true:false;
     }
 
@@ -49,11 +49,11 @@ public class DateTask implements Serializable{
         this.date = date;
     }
 
-    public HashMap<Long, Task> getTasks() {
+    public HashMap<String, Task> getTasks() {
         return tasks;
     }
 
-    public void setTasks(HashMap<Long, Task> tasks) {
+    public void setTasks(HashMap<String, Task> tasks) {
         this.tasks = tasks;
     }
 

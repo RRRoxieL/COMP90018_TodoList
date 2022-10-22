@@ -100,7 +100,7 @@ public class PopOutTaskDialog extends DialogFragment {
                 Message message = handler.obtainMessage();
                 Bundle bundle = new Bundle();
                 bundle.putChar("actionTag",'d');
-                bundle.putLong("ID",task.getID());
+                bundle.putString("ID",task.getID());
                 message.setData(bundle);
                 handler.sendMessage(message);
                 dismiss();

@@ -1,5 +1,7 @@
 package com.example.todolist.ui.calendar;
 
+import static android.content.ContentValues.TAG;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -35,11 +37,17 @@ import com.example.todolist.databinding.FragmentCalendarBinding;
 import com.example.todolist.databinding.FragmentDateBinding;
 import com.example.todolist.tools.TomToolkit;
 import com.example.todolist.ui.calendar.CalendarViewModel;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.DateTimeException;
 import java.util.Date;
 import java.util.Map;
 
@@ -50,12 +58,12 @@ public class DateFragment extends Fragment {
     private String dateString;
     final static private SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
     private Handler handler;
-
+    private DatabaseReference databaseTable = TomToolkit.getDatabaseTable();
     @RequiresApi(api = Build.VERSION_CODES.N)
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         //initialize the attributes except dateTask
         initialize(inflater,container,savedInstanceState);
-        updateView(dateString);
+        updateView();
 
         binding.btnAddwork.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,15 +76,28 @@ public class DateFragment extends Fragment {
         binding.btnPredate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                try {
-//                    dateTask = new DateTask(dateFormat.parse(dateString));
-//                } catch (ParseException e) {
-//                    e.printStackTrace();
-//                }
-//                Task testTask = new Task(10,15,"test task name","descfjdsklgkdhfkdjsabhfsdhifojbafiudsahhjkfshdaifhsiufehfoiewlhfiuegfhuisahskjld", null,null);
-//
-//                String s = new Gson().toJson(dateTask);
-//                new Gson().fromJson(s,DateTask.class);
+                TomToolkit.saveToFireBase(dateString,dateTask);
+
+            }
+        });
+
+        binding.btnPstdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatabaseReference databaseTable = TomToolkit.getDatabaseTable();
+                databaseTable.child(dateString).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        Object value = snapshot.getValue();
+                        dateTask = new Gson().fromJson(value.toString(), DateTask.class);
+                        Toast.makeText(getContext(),"prebtn:"+dateTask.toString(),Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Log.w(TAG, "loadPost:onCancelled", error.toException());
+                    }
+                });
 
             }
         });
@@ -90,21 +111,13 @@ public class DateFragment extends Fragment {
         binding = null;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    private void updateView(String date){
-        dateTask = TomToolkit.readData(getActivity(), date);
-        int count=0;
+    private void updateView(){
         if(dateTask!=null && dateTask.getTasks()!=null){
             binding.workLayout.removeAllViews();
-            for (Map.Entry<Long,Task> entry: dateTask.getTasks().entrySet()) {
-                Log.d("tag",String.valueOf(count++));
+            for (Map.Entry<String,Task> entry: dateTask.getTasks().entrySet()) {
                 TaskListItemView taskListItemView = new TaskListItemView(getContext(),entry.getValue(),dateString,handler,this);
                 binding.workLayout.addView(taskListItemView);
             }
-//            Task testTask = new Task(10,15,"test task name","descfjdsklgkdhfkdjsabhfsdhifojbafiudsahhjkfshdaifhsiufehfoiewlhfiuegfhuisahskjld", null,null);
-//            dateTask.addTask("test",testTask);
-//            TaskListItemView taskListItemView = new TaskListItemView(getContext(),testTask);
-//            binding.workLayout.addView(taskListItemView);
         }
     }
 
@@ -115,8 +128,6 @@ public class DateFragment extends Fragment {
 
         Bundle bundle = getArguments();
         CharSequence date = bundle.getCharSequence("time");
-//        Toast.makeText(getContext(), date, Toast.LENGTH_SHORT).show();
-
         dateString = date.toString();
 
         try {
@@ -125,10 +136,10 @@ public class DateFragment extends Fragment {
             e.printStackTrace();
             System.exit(1);
         }
-        TomToolkit.saveData(getActivity(),dateString,dateTask);
-        if(TomToolkit.readData(getActivity(),dateString)==null){
-            TomToolkit.saveData(getActivity(),dateString,dateTask);
-        }
+
+        bindDateTask();
+
+
         handler=new Handler(Looper.getMainLooper()){
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
@@ -140,16 +151,48 @@ public class DateFragment extends Fragment {
                     Task task = (Task)data.getSerializable("task");
                     dateTask.addTask(task);
                 }else if(actionTag=='d'){
-                    Toast.makeText(getContext(),Boolean.toString(dateTask.deleteTask(data.getLong("ID"))), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(),Boolean.toString(dateTask.deleteTask(data.getString("ID"))), Toast.LENGTH_SHORT).show();
                 }
 
-
-                Toast.makeText(getContext(), dateTask.toString(), Toast.LENGTH_SHORT).show();
-                TomToolkit.saveData(getActivity(),dateString,dateTask);
-                updateView(dateString);
+                saveData();
+                updateView();
             }
         };
+
         getActivity().setTitle(date);
     }
+
+    private void saveData(){
+        TomToolkit.saveToFireBase(dateString,dateTask);
+    }
+
+    private void readData(){
+
+    }
+
+    private void bindDateTask(){
+        databaseTable.child(dateString).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Object value = snapshot.getValue();
+                if(value!=null){
+                    dateTask = new Gson().fromJson(value.toString(), DateTask.class);
+                    if(dateTask==null || dateTask.getTasks()==null){
+                        Toast.makeText(getContext(), "read data == null", Toast.LENGTH_SHORT).show();
+                        saveData();
+                    }
+                    updateView();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.w(TAG, "loadPost:onCancelled", error.toException());
+            }
+        });
+    }
+
+
 
 }
