@@ -3,13 +3,19 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Android_Studio_WorkSpace/COMP90018_TodoList/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.176" />
+        <entry key="..\:/Android_Studio_WorkSpace/COMP90018_TodoList/app/src/main/res/drawable/ic_analysis.xml" value="0.176" />
         <entry key="..\:/Android_Studio_WorkSpace/COMP90018_TodoList/app/src/main/res/drawable/ic_calendar.xml" value="0.173" />
+        <entry key="..\:/Android_Studio_WorkSpace/COMP90018_TodoList/app/src/main/res/drawable/ic_home.xml" value="0.176" />
+        <entry key="..\:/Android_Studio_WorkSpace/COMP90018_TodoList/app/src/main/res/drawable/ic_launcher_background.xml" value="0.176" />
+        <entry key="..\:/Android_Studio_WorkSpace/COMP90018_TodoList/app/src/main/res/drawable/ic_profile.xml" value="0.176" />
+        <entry key="..\:/Android_Studio_WorkSpace/COMP90018_TodoList/app/src/main/res/drawable/ic_timer.xml" value="0.176" />
         <entry key="..\:/Android_Studio_WorkSpace/COMP90018_TodoList/app/src/main/res/layout/activity_login.xml" value="0.3515625" />
         <entry key="..\:/Android_Studio_WorkSpace/COMP90018_TodoList/app/src/main/res/layout/activity_main.xml" value="0.36614583333333334" />
         <entry key="..\:/Android_Studio_WorkSpace/COMP90018_TodoList/app/src/main/res/layout/calender_layout.xml" value="0.18645833333333334" />
         <entry key="..\:/Android_Studio_WorkSpace/COMP90018_TodoList/app/src/main/res/layout/date_layout.xml" value="0.1" />
         <entry key="..\:/Android_Studio_WorkSpace/COMP90018_TodoList/app/src/main/res/layout/date_works.xml" value="0.18333333333333332" />
-        <entry key="..\:/Android_Studio_WorkSpace/COMP90018_TodoList/app/src/main/res/layout/dialog_popouttask.xml" value="0.1" />
+        <entry key="..\:/Android_Studio_WorkSpace/COMP90018_TodoList/app/src/main/res/layout/dialog_popouttask.xml" value="0.33" />
         <entry key="..\:/Android_Studio_WorkSpace/COMP90018_TodoList/app/src/main/res/layout/fragment_analysis.xml" value="0.3515625" />
         <entry key="..\:/Android_Studio_WorkSpace/COMP90018_TodoList/app/src/main/res/layout/fragment_calendar.xml" value="0.1" />
         <entry key="..\:/Android_Studio_WorkSpace/COMP90018_TodoList/app/src/main/res/layout/fragment_date.xml" value="0.1" />

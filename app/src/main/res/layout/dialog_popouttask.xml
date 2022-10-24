@@ -40,50 +40,65 @@
         />
 
 
-    <EditText
-        android:id="@+id/name_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="my first task"
-        android:layout_marginHorizontal="@dimen/edit_task_horizontal_margin"
-        android:drawableLeft="@drawable/ic_home"
-        app:layout_constraintTop_toBottomOf="@id/btn_cancle"
-        android:maxLines="1"
-        />
-    <EditText
-        android:id="@+id/descrpt_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/name_text"
-        android:layout_marginHorizontal="@dimen/edit_task_horizontal_margin"
-        android:drawableLeft="@drawable/ic_home"
-        android:scrollbars="vertical"
-        android:maxLines="5"
-        android:text="descrip your task"/>
 
-    <TextView
-        android:id="@+id/importance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/descrpt_text"
-        android:text="NOT IMPORTANT"
-        android:drawableLeft="@drawable/ic_calendar"
-        />
+        <EditText
+            android:id="@+id/name_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="my first task"
+            android:layout_marginHorizontal="@dimen/edit_task_horizontal_margin"
+            android:drawableLeft="@drawable/ic_home"
+            app:layout_constraintTop_toBottomOf="@+id/btn_cancle"
+            android:maxLines="1"
+            />
+        <EditText
+            android:id="@+id/descrpt_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/name_text"
+            android:layout_marginHorizontal="@dimen/edit_task_horizontal_margin"
+            android:drawableLeft="@drawable/ic_home"
+            android:scrollbars="vertical"
+            android:maxLines="5"
+            android:text="descrip your task"/>
 
-    <TimePicker
-        android:id="@+id/timepicker"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:timePickerMode="spinner"
-        app:layout_constraintTop_toBottomOf="@id/importance"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        <TextView
+            android:id="@+id/importance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/descrpt_text"
+            android:text="NOT IMPORTANT"
+            android:drawableLeft="@drawable/ic_calendar"
+            />
 
-        >
+        <TimePicker
+            android:id="@+id/timepicker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:timePickerMode="spinner"
+            app:layout_constraintTop_toBottomOf="@id/img"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            >
+        </TimePicker>
 
-    </TimePicker>
+        <ImageView
+            android:id="@+id/img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintHeight_min="40dp"
+            app:layout_constraintWidth_min="40dp"
+            app:layout_constraintHeight_max="200dp"
+            app:layout_constraintWidth_max="200dp"
+            android:scaleType="fitCenter"
+            android:src="@mipmap/ic_launcher"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/importance" />
+
+
 
 
 

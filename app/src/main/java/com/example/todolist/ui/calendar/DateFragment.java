@@ -27,9 +27,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONObject;
-import com.alibaba.fastjson2.TypeReference;
 import com.example.todolist.DAO.DateTask;
 import com.example.todolist.DAO.Task;
 import com.example.todolist.R;
@@ -76,8 +73,8 @@ public class DateFragment extends Fragment {
         binding.btnPredate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TomToolkit.saveToFireBase(dateString,dateTask);
-
+//                TomToolkit.saveToFireBase(dateString,dateTask);
+                Task task = new Task(getActivity(),0,0,"name","default",null,null);
             }
         });
 
@@ -177,10 +174,10 @@ public class DateFragment extends Fragment {
                 Object value = snapshot.getValue();
                 if(value!=null){
                     dateTask = new Gson().fromJson(value.toString(), DateTask.class);
-                    if(dateTask==null || dateTask.getTasks()==null){
-                        Toast.makeText(getContext(), "read data == null", Toast.LENGTH_SHORT).show();
-                        saveData();
-                    }
+//                    if(dateTask==null || dateTask.getTasks()==null){
+//                        Toast.makeText(getContext(), "read data == null", Toast.LENGTH_SHORT).show();
+//                        saveData();
+//                    }
                     updateView();
                 }
 
