@@ -7,6 +7,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CalendarView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -30,6 +31,12 @@ public class HomeFragment extends Fragment {
     private FragmentHomeBinding binding;
     private LinearLayout layout;
 
+    private int dutyAmount = 0;
+    private int dutyFinished = 0;
+
+    private TextView dateText;
+    private TextView dutyText;
+
     int i = 0;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -47,12 +54,46 @@ public class HomeFragment extends Fragment {
 
         layout = binding.eventLayout;
 
+        dateText = binding.dateText;
+        dutyText =  binding.dutyText;
+
         FloatingActionButton fab =  binding.fab;
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Toast.makeText(getContext(),"clicked fab", Toast.LENGTH_SHORT).show();
                 addView(root);
+            }
+        });
+
+        CalendarView homeCalendar = binding.HomeCalender;
+        LinearLayout pulldown = binding.pulldown;
+
+        homeCalendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+            @Override
+            public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
+                String date = dayOfMonth+"/"+month+"/"+year;
+                Toast.makeText(getContext(),"You selected :"+date,Toast.LENGTH_SHORT).show();
+                //homeCalendar.setVisibility(View.GONE);
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                lp.height = 0;
+                homeCalendar.setLayoutParams(lp);
+                pulldown.setVisibility(View.VISIBLE);
+
+                dateText.setText("Date: "+date);
+
+                layout.removeAllViews();
+            }
+        });
+
+        pulldown.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                homeCalendar.setLayoutParams(lp);
+                pulldown.setVisibility(View.GONE);
             }
         });
         return root;
@@ -77,6 +118,8 @@ public class HomeFragment extends Fragment {
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layout.addView(createEventView(),lp);
+        dutyAmount++;
+        setDutyText();
 
         // 添加分割线
         TextView splitLine = new TextView(getContext());
@@ -109,6 +152,8 @@ public class HomeFragment extends Fragment {
                     // 添加删除线
                     title.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);  //中划线，会有锯齿
                     title.getPaint().setAntiAlias(true);
+
+                    dutyFinished++;
                 } else {
                     // 没选中（未完成），背景为蓝色
                     event.setBackgroundColor(Color.parseColor("#00ffff"));
@@ -116,9 +161,13 @@ public class HomeFragment extends Fragment {
                     // 清除删除线
                     title.getPaint().setFlags(0);
                     title.invalidate();
+
+                    dutyFinished--;
                 }
                 // 重新设置字体加粗
                 title.getPaint().setFakeBoldText(true);
+
+                setDutyText();
             }
         });
         lp = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -175,6 +224,15 @@ public class HomeFragment extends Fragment {
         event.addView(timer,lp);
 
         return event;
+    }
+
+    private void setDutyText(){
+        dutyText.setText(getDutyInfo());
+    }
+
+    private String getDutyInfo(){
+        return dutyFinished==dutyAmount?
+                "All Finished, congratulation!":"Finished Duties: "+dutyFinished+"/"+dutyAmount;
     }
 
 }
