@@ -75,7 +75,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
                 month++;
-                String date = dayOfMonth+"/"+month+"/"+year;
+                String date = String.format("Date: %02d/%02d/%04d",dayOfMonth,month,year);
                 //Toast.makeText(getContext(),"You selected :"+date,Toast.LENGTH_SHORT).show();
                 //homeCalendar.setVisibility(View.GONE);
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
@@ -84,7 +84,7 @@ public class HomeFragment extends Fragment {
                 homeCalendar.setLayoutParams(lp);
                 pulldown.setVisibility(View.VISIBLE);
 
-                dateText.setText("Date: "+date);
+                dateText.setText(date);
 
                 layout.removeAllViews();
             }
@@ -110,7 +110,7 @@ public class HomeFragment extends Fragment {
         //日
         int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-        dateText.setText("Date: "+day+"/"+month+"/"+year);
+        dateText.setText(String.format("Date: %02d/%02d/%04d",day,month,year));
         dutyText.setText(getDutyInfo());
         return root;
     }
