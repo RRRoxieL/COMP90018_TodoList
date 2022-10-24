@@ -23,6 +23,8 @@ import com.example.todolist.R;
 import com.example.todolist.databinding.FragmentHomeBinding;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.Calendar;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -72,8 +74,9 @@ public class HomeFragment extends Fragment {
         homeCalendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
+                month++;
                 String date = dayOfMonth+"/"+month+"/"+year;
-                Toast.makeText(getContext(),"You selected :"+date,Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(),"You selected :"+date,Toast.LENGTH_SHORT).show();
                 //homeCalendar.setVisibility(View.GONE);
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -96,6 +99,19 @@ public class HomeFragment extends Fragment {
                 pulldown.setVisibility(View.GONE);
             }
         });
+
+        // initial date and duty status
+        Calendar calendar = Calendar.getInstance();
+        //获取系统的日期
+        //年
+        int year = calendar.get(Calendar.YEAR);
+        //月
+        int month = calendar.get(Calendar.MONTH)+1;
+        //日
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        dateText.setText("Date: "+day+"/"+month+"/"+year);
+        dutyText.setText(getDutyInfo());
         return root;
     }
 
