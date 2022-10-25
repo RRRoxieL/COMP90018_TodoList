@@ -6,16 +6,21 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+
+import com.bumptech.glide.Glide;
 import com.example.todolist.DAO.DateTask;
 import com.example.todolist.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -28,12 +33,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.Date;
 import java.util.Map;
 import java.util.Set;
@@ -75,8 +82,35 @@ public class TomToolkit {
         }
     }
 
-    public static Uri getPicture(String path){
-        return null;
+    public static void getPicture(String filename,Context context,ImageView imageView){
+        StorageReference fileRef = fireStorage.child("image/" + filename);
+        File tempimg = null;
+        if(true){
+            try {
+                tempimg = File.createTempFile(filename,".jpg");
+                File finalTempimg = tempimg;
+                fileRef.getFile(finalTempimg).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                        Bitmap bitmap = BitmapFactory.decodeFile(finalTempimg.getAbsolutePath());
+                        imageView.setImageBitmap(bitmap);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(context,"picture not found",Toast.LENGTH_LONG);
+                    }
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+        }
+    }
+
+    public static StorageReference getImgRef(String filename){
+        return fireStorage.child("image/" + filename);
     }
 
     public static void savePicture(Uri imageUri,String filename,Context context){

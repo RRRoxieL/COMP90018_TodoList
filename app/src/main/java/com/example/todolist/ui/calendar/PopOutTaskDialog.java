@@ -127,6 +127,7 @@ public class PopOutTaskDialog extends DialogFragment {
                 }
             }
         });
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -173,7 +174,9 @@ public class PopOutTaskDialog extends DialogFragment {
                 Message message = handler.obtainMessage();
                 Bundle bundle = new Bundle();
                 bundle.putChar("actionTag",'d');
-                bundle.putString("ID",task.getID());
+                if(task!=null){
+                    bundle.putString("ID",task.getID());
+                }
                 message.setData(bundle);
                 handler.sendMessage(message);
                 dismiss();
@@ -208,7 +211,7 @@ public class PopOutTaskDialog extends DialogFragment {
         if(date==null || imageUri==null){
             return null;
         }
-        return date.toString()+imageUri.getLastPathSegment();
+        return date.toString()+imageUri.getLastPathSegment()+".jpg";
     }
 
 
@@ -221,10 +224,7 @@ public class PopOutTaskDialog extends DialogFragment {
             binding.timepicker.setMinute(task.getMinute());
             binding.descrptText.setText(task.getDescription());
             if(task.getPicPath()!=null){
-                Uri imgUri = TomToolkit.getPicture(task.getPicPath());
-                if(imgUri!=null){
-                    binding.img.setImageURI(imgUri);
-                }
+                TomToolkit.getPicture(task.getPicPath(), getContext(),binding.img);
             }
         }
     }
@@ -241,6 +241,7 @@ public class PopOutTaskDialog extends DialogFragment {
             task.setImportance(Task.Importance.toImportance(binding.importance.getText().toString()));
         }
     }
+
 //
 //    @Override
 //    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
