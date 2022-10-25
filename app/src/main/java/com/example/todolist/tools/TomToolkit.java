@@ -141,17 +141,17 @@ public class TomToolkit {
     }
 
 
-    public static getTool(){
-        CharSequence date = ""+dayOfMonth+"-"+(month+1)+"-"+year;
-        Bundle bundle = new Bundle();
-        bundle.putCharSequence("time",date);
-        DateFragment dateFragment = new DateFragment();
-        dateFragment.setArguments(bundle);
-        FragmentManager fm = getParentFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        ft.replace(R.id.nav_host_fragment_activity_main,dateFragment);
-        ft.commit();
-    }
+//    public static getTool(){
+//        CharSequence date = ""+dayOfMonth+"-"+(month+1)+"-"+year;
+//        Bundle bundle = new Bundle();
+//        bundle.putCharSequence("time",date);
+//        DateFragment dateFragment = new DateFragment();
+//        dateFragment.setArguments(bundle);
+//        FragmentManager fm = getParentFragmentManager();
+//        FragmentTransaction ft = fm.beginTransaction();
+//        ft.replace(R.id.nav_host_fragment_activity_main,dateFragment);
+//        ft.commit();
+//    }
 
 
 
