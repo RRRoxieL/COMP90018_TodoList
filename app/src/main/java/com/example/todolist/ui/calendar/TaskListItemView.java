@@ -35,6 +35,12 @@ public class TaskListItemView extends ConstraintLayout {
                 }
             });
         }
+        binding.isfinished.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     @Override
