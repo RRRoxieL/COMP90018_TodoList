@@ -75,8 +75,8 @@ public class TomToolkit {
         }
     }
 
-    public static void getPicture(String path){
-
+    public static Uri getPicture(String path){
+        return null;
     }
 
     public static void savePicture(Uri imageUri,String filename,Context context){

@@ -220,12 +220,12 @@ public class PopOutTaskDialog extends DialogFragment {
             binding.timepicker.setHour(task.getHour());
             binding.timepicker.setMinute(task.getMinute());
             binding.descrptText.setText(task.getDescription());
-//            if(task.getPicPath()!=null){
-//                Uri imgUri = TomToolkit.getPicture(task.getPicPath());
-//                if(imgUri!=null){
-//                    binding.img.setImageURI(imgUri);
-//                }
-//            }
+            if(task.getPicPath()!=null){
+                Uri imgUri = TomToolkit.getPicture(task.getPicPath());
+                if(imgUri!=null){
+                    binding.img.setImageURI(imgUri);
+                }
+            }
         }
     }
 
