@@ -203,7 +203,6 @@ public class PopOutTaskDialog extends DialogFragment {
 
         MenuInflater menuInflater = new MenuInflater(getContext());
 
-
         return root;
     }
 
@@ -226,20 +225,28 @@ public class PopOutTaskDialog extends DialogFragment {
             if(task.getPicPath()!=null){
                 TomToolkit.getPicture(task.getPicPath(), getContext(),binding.img);
             }
+            if(task.getImportance()!=null){
+                int position = Task.Importance.getPosition(task.getImportance());
+                binding.importance.setSelection(position);
+            }
+
         }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void setTask(){
         if(task==null){
-            task = new Task(getActivity(),binding.timepicker.getHour(),binding.timepicker.getMinute(),binding.nameText.getText().toString(),binding.descrptText.getText().toString(),binding.importance.getText().toString(),null);
+            Toast.makeText(getContext(),binding.importance.getSelectedItem().toString(),Toast.LENGTH_LONG);
+            task = new Task(getActivity(),binding.timepicker.getHour(),binding.timepicker.getMinute(),binding.nameText.getText().toString(),binding.descrptText.getText().toString(),binding.importance.getSelectedItem().toString(),null);
         }else{
             task.setName(binding.nameText.getText().toString());
             task.setDescription(binding.descrptText.getText().toString());
             task.setHour(binding.timepicker.getHour());
             task.setMinute(binding.timepicker.getMinute());
-            task.setImportance(Task.Importance.toImportance(binding.importance.getText().toString()));
+            task.setImportance(binding.importance.getSelectedItem().toString());
+            Toast.makeText(getContext(),binding.importance.getSelectedItem().toString(),Toast.LENGTH_LONG);
         }
+
     }
 
 //

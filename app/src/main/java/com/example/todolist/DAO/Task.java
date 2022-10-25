@@ -38,16 +38,29 @@ public class Task implements Comparable<Task>, Serializable {
         public static Importance toImportance(String s){
             String upS = s.toUpperCase(Locale.ROOT);
             switch (upS){
-                case "NOT IMPORATANT":
+                case "NOT IMPORTANT":
                     return NOT_IMPOTANT;
                 case "IMPORTANT":
                     return IMPORTANT;
-                case "VERY IMPORTATNT":
+                case "VERY IMPORTANT":
                     return VERY_IMPORTANT;
                 default:
                     return null;
             }
 
+        }
+
+        public static int getPosition(Importance importance){
+            switch (importance){
+                case NOT_IMPOTANT:
+                    return 0;
+                case IMPORTANT:
+                    return 1;
+                case VERY_IMPORTANT:
+                    return 2;
+                default:
+                    return 0;
+            }
         }
     }
 
@@ -88,7 +101,7 @@ public class Task implements Comparable<Task>, Serializable {
 //                ", minute=" + minute +
                 ", name='" + name + '\'' +
 //                ", description='" + description + '\'' +
-//                ", importance=" + importance +
+                ", importance=" + importance +
 //                ", taskDown=" + taskDown +
 //                ", picPath='" + picPath + '\'' +
 
@@ -135,6 +148,10 @@ public class Task implements Comparable<Task>, Serializable {
         this.importance = importance;
     }
 
+    public void setImportance(String importance) {
+        this.importance = Importance.toImportance(importance);
+    }
+
     public boolean isTaskDown() {
         return taskDown;
     }
@@ -158,4 +175,6 @@ public class Task implements Comparable<Task>, Serializable {
     public void setID(String ID) {
         this.ID = ID;
     }
+
+
 }
