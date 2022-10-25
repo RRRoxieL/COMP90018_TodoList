@@ -74,6 +74,8 @@ public class HomeFragment extends Fragment {
     private ValueEventListener valueEventListener;
     int i = 0;
 
+
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         HomeViewModel homeViewModel =
