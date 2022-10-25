@@ -1,21 +1,29 @@
 package com.example.todolist.ui.timer;
 
 
+import android.annotation.SuppressLint;
+import android.app.Service;
+import android.content.Intent;
 import android.os.CountDownTimer;
+import android.os.IBinder;
 import android.util.Log;
 import android.widget.Chronometer;
 
+import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import java.io.Serializable;
+
 public class TimerViewModel extends ViewModel{
 
-    private int deafultTime = 25*60*1000;
-    private final static String TAG = "Timer_View";
-    private MutableLiveData<Integer> targetTime;
-    private MutableLiveData<Integer> remainingTime;
-    private long timeWhenStopped;
-    private Chronometer backup;
+    private  int deafultTime = 10*60*1000;
+    private final String TAG = "Timer_View";
+    private  MutableLiveData<Integer> targetTime;
+    private  MutableLiveData<Integer> remainingTime;
+    public String timeText;
+    public int progress;
+
     private boolean isStart;
     private boolean isPause;
 
@@ -24,39 +32,59 @@ public class TimerViewModel extends ViewModel{
         remainingTime.setValue(deafultTime);
     }
 
+    public String getTimeText(){
+        return this.timeText;
+    }
+
+    public int getProgress(){
+        return this.progress;
+    }
+
     public void setDeafultTime(int time){
         deafultTime = time;
+        remainingTime.setValue(time);
+        targetTime.setValue(time);
+        updateTimeText();
+        updateProgress();
+    }
+    private void updateTimeText(){
+        this.timeText = timeToText(this.remainingTime.getValue());
     }
 
     public MutableLiveData<Integer> getTime() {
         if(targetTime == null){
-            targetTime = new MutableLiveData<>();
-            targetTime.setValue(deafultTime);
-            remainingTime = new MutableLiveData<>();
-            remainingTime.setValue(deafultTime);
+                targetTime = new MutableLiveData<>();
+                targetTime.setValue(deafultTime);
+                remainingTime = new MutableLiveData<>();
+                remainingTime.setValue(deafultTime);
+                updateTimeText();
         }
         return targetTime;
     }
 
-
-
-    public int getProgress(){
+    public void updateProgress(){
         int passTime = targetTime.getValue() - remainingTime.getValue();
-        return passTime * 100 / targetTime.getValue();
+        this.progress =  passTime * 100 / targetTime.getValue();
     }
 
-    public void passTimer(Chronometer chronometer){
-        backup = chronometer;
-        backup.start();
-    }
 
-    public void setRemainingTime(Chronometer chronometer){
-        int remain = chronometerToTime(chronometer)==0? deafultTime : chronometerToTime(chronometer);
+    public void setRemainingTime(String timeString){
+        int remain = textToTime(timeString)==0? deafultTime : textToTime(timeString);
         remainingTime.setValue(remain);
+        updateProgress();
+        updateTimeText();
     }
 
-    public int chronometerToTime(Chronometer chronometer){
-        String[] leftTime = chronometer.getText().toString().split(":");
+    public String timeToText(long time){
+        int seconds = (int) (time/1000);
+        int minutes = seconds / 60;
+        seconds = seconds % 60;
+        return String.format("%02d", minutes) + ":" + String.format("%02d", seconds);
+
+    }
+
+    public int textToTime(String timeString){
+        String[] leftTime = timeString.split(":");
         int minute = Integer.parseInt(leftTime[0]);
         int second = Integer.parseInt(leftTime[1]);
         if(minute<=0 && second==0){
@@ -66,8 +94,9 @@ public class TimerViewModel extends ViewModel{
         }
     }
 
-    public int getTimer(){
-        return chronometerToTime(backup);
+
+    public int getRemainingTime(){
+        return remainingTime.getValue();
     }
 
 
@@ -93,11 +122,4 @@ public class TimerViewModel extends ViewModel{
         Log.d(TAG, "cleared");
     }
 
-    public long getStopTime() {
-        return timeWhenStopped;
-    }
-
-    public void setStopTime(long timeWhenStopped) {
-        this.timeWhenStopped = timeWhenStopped;
-    }
 }

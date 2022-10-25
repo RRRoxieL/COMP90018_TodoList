@@ -44,16 +44,23 @@ public class TimePickerDialogFragment extends DialogFragment {
         String[] strArray = Arrays.stream(array).mapToObj(String::valueOf).toArray(String[]::new);
         binding.numberPicker.setMaxValue(60);
         binding.numberPicker.setMinValue(10);
-        binding.numberPicker.setValue(25);
+        binding.numberPicker.setValue(15);
         binding.numberPicker.setDisplayedValues(strArray);
 
         binding.setBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (getParentFragment() != null) {
-                    Log.d("Dialog", "onClick: "+ binding.numberPicker.getValue());
-                    ((TimerFragment)getParentFragment()).setTime(binding.numberPicker.getValue());
+                    ((TimerFragment)getParentFragment()).setTime(binding.numberPicker.getValue() * 60 * 1000);
                 }
+                getDialog().hide();
+            }
+        });
+
+        binding.cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getDialog().hide();
             }
         });
 
