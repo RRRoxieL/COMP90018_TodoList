@@ -71,6 +71,7 @@ public class HomeFragment extends Fragment {
     private Handler handler;
     private DateTask dateTask;
     private DatabaseReference databaseTable = TomToolkit.getDatabaseTable();
+    private ValueEventListener valueEventListener;
     int i = 0;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -114,6 +115,7 @@ public class HomeFragment extends Fragment {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+        removeBindDateTask();
         bindDateTask();
         updateView();
         homeCalendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
@@ -121,6 +123,15 @@ public class HomeFragment extends Fragment {
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
                 month++;
                 currentDate = String.format("Date: %02d-%02d-%04d",dayOfMonth,month,year);
+                Toast.makeText(getContext(), currentDate, Toast.LENGTH_SHORT).show();
+                try {
+                    dateTask = new DateTask(TomToolkit.getDate(currentDate));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                removeBindDateTask();
+                bindDateTask();
+                updateView();
                 //Toast.makeText(getContext(),"You selected :"+date,Toast.LENGTH_SHORT).show();
                 //homeCalendar.setVisibility(View.GONE);
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
@@ -145,7 +156,7 @@ public class HomeFragment extends Fragment {
                 if(actionTag=='a'){
                     com.example.todolist.DAO.Task task = (Task)data.getSerializable("task");
 //                    Toast.makeText(getContext(),"handler report task: "+task.toString(),Toast.LENGTH_LONG).show();
-                    Toast.makeText(getContext(), dateTask==null?"true":"false", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getContext(), dateTask==null?"true":"false", Toast.LENGTH_SHORT).show();
                     dateTask.addTask(task);
                 }else if(actionTag=='d'){
 //                    Toast.makeText(getContext(),Boolean.toString(dateTask.deleteTask(data.getString("ID"))), Toast.LENGTH_SHORT).show();
@@ -339,13 +350,13 @@ public class HomeFragment extends Fragment {
     }
 
     private void bindDateTask(){
-        databaseTable.child(currentDate).addValueEventListener(new ValueEventListener() {
+        ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Object value = snapshot.getValue();
-                if(value!=null){
+                if (value != null) {
                     dateTask = new Gson().fromJson(value.toString(), DateTask.class);
-                    if(dateTask==null || dateTask.getTasks()==null){
+                    if (dateTask == null || dateTask.getTasks() == null) {
                         Toast.makeText(getContext(), "read data == null", Toast.LENGTH_SHORT).show();
 //                        saveData();
                     }
@@ -353,13 +364,20 @@ public class HomeFragment extends Fragment {
                     updateView();
                 }
 
-            }
 
+            }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.w(TAG, "loadPost:onCancelled", error.toException());
             }
-        });
+        };
+        databaseTable.child(currentDate).addValueEventListener(valueEventListener);
+    }
+
+    private void removeBindDateTask(){
+        if(valueEventListener!=null && currentDate!=null){
+            databaseTable.child(currentDate).removeEventListener(valueEventListener);
+        }
     }
 
     private void saveData(){
