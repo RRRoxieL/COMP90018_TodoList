@@ -53,7 +53,6 @@ public class DateFragment extends Fragment {
     private FragmentDateBinding binding;
     private DateTask dateTask;
     private String dateString;
-    final static private SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
     private Handler handler;
     private DatabaseReference databaseTable = TomToolkit.getDatabaseTable();
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -128,7 +127,7 @@ public class DateFragment extends Fragment {
         dateString = date.toString();
 
         try {
-            dateTask = new DateTask(dateFormat.parse(dateString));
+            dateTask = new DateTask(TomToolkit.getDate(dateString));
         } catch (ParseException e) {
             e.printStackTrace();
             System.exit(1);
@@ -175,10 +174,10 @@ public class DateFragment extends Fragment {
                 Object value = snapshot.getValue();
                 if(value!=null){
                     dateTask = new Gson().fromJson(value.toString(), DateTask.class);
-//                    if(dateTask==null || dateTask.getTasks()==null){
-//                        Toast.makeText(getContext(), "read data == null", Toast.LENGTH_SHORT).show();
+                    if(dateTask==null || dateTask.getTasks()==null){
+                        Toast.makeText(getContext(), "read data == null", Toast.LENGTH_SHORT).show();
 //                        saveData();
-//                    }
+                    }
                     updateView();
                 }
 

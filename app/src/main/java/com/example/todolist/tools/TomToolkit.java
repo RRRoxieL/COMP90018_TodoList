@@ -45,7 +45,9 @@ import com.google.gson.Gson;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
@@ -53,6 +55,7 @@ public class TomToolkit {
     private static final DatabaseReference dateTaskTable = FirebaseDatabase.getInstance().getReference("DateTaskTable");
     private static final StorageReference fireStorage = FirebaseStorage.getInstance().getReference("Picture");
     private static Long ID;
+    final static private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
     static {
         FirebaseDatabase.getInstance().getReference("GlobalTaskID").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
@@ -140,7 +143,9 @@ public class TomToolkit {
         return dateTaskTable;
     }
 
-
+    public static Date getDate(String dateString) throws ParseException {
+        return dateFormat.parse(dateString);
+    }
 //    public static getTool(){
 //        CharSequence date = ""+dayOfMonth+"-"+(month+1)+"-"+year;
 //        Bundle bundle = new Bundle();

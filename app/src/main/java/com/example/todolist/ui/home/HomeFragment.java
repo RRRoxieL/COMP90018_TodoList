@@ -1,8 +1,14 @@
 package com.example.todolist.ui.home;
 
+import static android.content.ContentValues.TAG;
+
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.view.Gravity;
 
 import android.os.Bundle;
@@ -19,25 +25,38 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.todolist.DAO.DateTask;
+import com.example.todolist.DAO.Task;
 import com.example.todolist.R;
 import com.example.todolist.databinding.FragmentHomeBinding;
+import com.example.todolist.tools.TomToolkit;
+import com.example.todolist.ui.calendar.PopOutTaskDialog;
+import com.example.todolist.ui.calendar.TaskListItemView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.text.ParseException;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.google.android.gms.auth.api.identity.BeginSignInRequest;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
 
 public class HomeFragment extends Fragment {
     private FragmentHomeBinding binding;
@@ -48,7 +67,10 @@ public class HomeFragment extends Fragment {
 
     private TextView dateText;
     private TextView dutyText;
-
+    private String currentDate;
+    private Handler handler;
+    private DateTask dateTask;
+    private DatabaseReference databaseTable = TomToolkit.getDatabaseTable();
     int i = 0;
 
 
@@ -71,46 +93,9 @@ public class HomeFragment extends Fragment {
         dateText = binding.dateText;
         dutyText =  binding.dutyText;
 
-        FloatingActionButton fab =  binding.fab;
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Toast.makeText(getContext(),"clicked fab", Toast.LENGTH_SHORT).show();
-                addView(root);
-            }
-        });
-
         CalendarView homeCalendar = binding.HomeCalender;
         LinearLayout pulldown = binding.pulldown;
 
-        homeCalendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
-            @Override
-            public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
-                month++;
-                String date = String.format("Date: %02d/%02d/%04d",dayOfMonth,month,year);
-                //Toast.makeText(getContext(),"You selected :"+date,Toast.LENGTH_SHORT).show();
-                //homeCalendar.setVisibility(View.GONE);
-                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                lp.height = 0;
-                homeCalendar.setLayoutParams(lp);
-                pulldown.setVisibility(View.VISIBLE);
-
-                dateText.setText(date);
-
-                layout.removeAllViews();
-            }
-        });
-
-        pulldown.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                homeCalendar.setLayoutParams(lp);
-                pulldown.setVisibility(View.GONE);
-            }
-        });
 
         // initial date and duty status
         Calendar calendar = Calendar.getInstance();
@@ -122,9 +107,101 @@ public class HomeFragment extends Fragment {
         //日
         int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-        dateText.setText(String.format("Date: %02d/%02d/%04d",day,month,year));
+        //initialize currentDate
+        currentDate = createCurrentDate(day,month,year);
+
+        //initialize datetask
+        try {
+            dateTask = new DateTask(TomToolkit.getDate(currentDate));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        bindDateTask();
+        updateView();
+        homeCalendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+            @Override
+            public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
+                month++;
+                currentDate = String.format("Date: %02d-%02d-%04d",dayOfMonth,month,year);
+                //Toast.makeText(getContext(),"You selected :"+date,Toast.LENGTH_SHORT).show();
+                //homeCalendar.setVisibility(View.GONE);
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                lp.height = 0;
+                homeCalendar.setLayoutParams(lp);
+                pulldown.setVisibility(View.VISIBLE);
+
+                dateText.setText(currentDate);
+
+                layout.removeAllViews();
+            }
+        });
+
+        handler=new Handler(Looper.getMainLooper()){
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public void handleMessage(@NonNull Message msg) {
+                super.handleMessage(msg);
+                Bundle data = msg.getData();
+                char actionTag = data.getChar("actionTag");
+                if(actionTag=='a'){
+                    com.example.todolist.DAO.Task task = (Task)data.getSerializable("task");
+//                    Toast.makeText(getContext(),"handler report task: "+task.toString(),Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), dateTask==null?"true":"false", Toast.LENGTH_SHORT).show();
+                    dateTask.addTask(task);
+                }else if(actionTag=='d'){
+//                    Toast.makeText(getContext(),Boolean.toString(dateTask.deleteTask(data.getString("ID"))), Toast.LENGTH_SHORT).show();
+                }
+//                Toast.makeText(getContext(), dateTask.toString(), Toast.LENGTH_SHORT).show();
+                saveData();
+                updateView();
+            }
+        };
+
+
+
+        FloatingActionButton fab =  binding.fab;
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Toast.makeText(getContext(),"clicked fab", Toast.LENGTH_SHORT).show();
+                PopOutTaskDialog popOutTaskDialog = new PopOutTaskDialog(currentDate,handler);
+                popOutTaskDialog.show(getParentFragmentManager(),"Task Editor Dialog");
+//                addView(root);
+            }
+        });
+
+
+
+        pulldown.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                homeCalendar.setLayoutParams(lp);
+                pulldown.setVisibility(View.GONE);
+            }
+        });
+
+
+
+        dateText.setText(currentDate);
         dutyText.setText(getDutyInfo());
         return root;
+    }
+
+    private void updateView() {
+        if(dateTask!=null && dateTask.getTasks()!=null){
+            binding.eventLayout.removeAllViews();
+            for (Map.Entry<String,Task> entry: dateTask.getTasks().entrySet()) {
+                TaskListItemView taskListItemView = new TaskListItemView(getContext(),entry.getValue(),currentDate,handler,this);
+                binding.eventLayout.addView(taskListItemView);
+            }
+        }
+    }
+
+    private String createCurrentDate(int day, int month, int year){
+        return String.format("%02d-%02d-%04d",day,month,year);
     }
 
     @Override
@@ -261,6 +338,34 @@ public class HomeFragment extends Fragment {
     private String getDutyInfo(){
         return dutyFinished==dutyAmount?
                 "All Finished, congratulation!":"Finished Duties: "+dutyFinished+"/"+dutyAmount;
+    }
+
+    private void bindDateTask(){
+        databaseTable.child(currentDate).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Object value = snapshot.getValue();
+                if(value!=null){
+                    dateTask = new Gson().fromJson(value.toString(), DateTask.class);
+                    if(dateTask==null || dateTask.getTasks()==null){
+                        Toast.makeText(getContext(), "read data == null", Toast.LENGTH_SHORT).show();
+//                        saveData();
+                    }
+//                    Toast.makeText(getContext(), dateTask.toString(), Toast.LENGTH_SHORT).show();
+                    updateView();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.w(TAG, "loadPost:onCancelled", error.toException());
+            }
+        });
+    }
+
+    private void saveData(){
+        TomToolkit.saveToFireBase(currentDate,dateTask);
     }
 
 }
