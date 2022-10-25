@@ -41,7 +41,15 @@ public class CalendarFragment extends Fragment {
         calendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
-
+                CharSequence date = ""+dayOfMonth+"-"+(month+1)+"-"+year;
+                Bundle bundle = new Bundle();
+                bundle.putCharSequence("time",date);
+                DateFragment dateFragment = new DateFragment();
+                dateFragment.setArguments(bundle);
+                FragmentManager fm = getParentFragmentManager();
+                FragmentTransaction ft = fm.beginTransaction();
+                ft.replace(R.id.nav_host_fragment_activity_main,dateFragment);
+                ft.commit();
                 Toast.makeText(getContext(),"You selected :"+dayOfMonth+"/"+(month+1)+"/"+year,Toast.LENGTH_SHORT).show();
             }
         });
@@ -53,17 +61,7 @@ public class CalendarFragment extends Fragment {
 //            @RequiresApi(api = Build.VERSION_CODES.N)
 //            @Override
 //            public void onClick(View v) {
-//                TextView dateView = (TextView)v;
-//                CharSequence date = dateView.getText();
-////                Toast.makeText(getActivity(), date, Toast.LENGTH_LONG).show();
-//                Bundle bundle = new Bundle();
-//                bundle.putCharSequence("time",date);
-//                DateFragment dateFragment = new DateFragment();
-//                dateFragment.setArguments(bundle);
-//                FragmentManager fm = getParentFragmentManager();
-//                FragmentTransaction ft = fm.beginTransaction();
-//                ft.replace(R.id.nav_host_fragment_activity_main,dateFragment);
-//                ft.commit();
+
 //            }
 //        });
         return root;
