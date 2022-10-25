@@ -152,7 +152,7 @@ public class HomeFragment extends Fragment {
                 }
 //                Toast.makeText(getContext(), dateTask.toString(), Toast.LENGTH_SHORT).show();
                 saveData();
-//                updateView();
+                updateView();
             }
         };
 
