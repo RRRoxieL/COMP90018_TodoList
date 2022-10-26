@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,6 +61,14 @@ public class DateFragment extends Fragment {
         //initialize the attributes except dateTask
         initialize(inflater,container,savedInstanceState);
         updateView();
+
+        binding.btnAddwork.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopOutTaskDialog popOutTaskDialog = new PopOutTaskDialog(dateString,handler);
+                popOutTaskDialog.show(getParentFragmentManager(),"Task Editor Dialog");
+            }
+        });
 
         binding.btnAddwork.setOnClickListener(new View.OnClickListener() {
             @Override
