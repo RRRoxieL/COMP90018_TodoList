@@ -3,26 +3,6 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-<<<<<<< HEAD
-        <entry key="..\:/JimmyCodes/AndroidCodes(Java)/COMP90018_TodoList/app/src/main/res/drawable/ic_launcher_background.xml" value="0.254" />
-        <entry key="..\:/JimmyCodes/AndroidCodes(Java)/COMP90018_TodoList/app/src/main/res/drawable/ic_profile.xml" value="0.254" />
-        <entry key="..\:/JimmyCodes/AndroidCodes(Java)/COMP90018_TodoList/app/src/main/res/drawable/ic_timer.xml" value="0.254" />
-        <entry key="..\:/JimmyCodes/AndroidCodes(Java)/COMP90018_TodoList/app/src/main/res/layout/activity_calender.xml" value="0.1" />
-        <entry key="..\:/JimmyCodes/AndroidCodes(Java)/COMP90018_TodoList/app/src/main/res/layout/activity_home.xml" value="0.1308876811594203" />
-        <entry key="..\:/JimmyCodes/AndroidCodes(Java)/COMP90018_TodoList/app/src/main/res/layout/activity_login.xml" value="0.1" />
-        <entry key="..\:/JimmyCodes/AndroidCodes(Java)/COMP90018_TodoList/app/src/main/res/layout/activity_main.xml" value="0.1" />
-        <entry key="..\:/JimmyCodes/AndroidCodes(Java)/COMP90018_TodoList/app/src/main/res/layout/activity_test.xml" value="0.1308876811594203" />
-        <entry key="..\:/JimmyCodes/AndroidCodes(Java)/COMP90018_TodoList/app/src/main/res/layout/fragment_calendar.xml" value="0.1" />
-        <entry key="..\:/JimmyCodes/AndroidCodes(Java)/COMP90018_TodoList/app/src/main/res/layout/fragment_home.xml" value="0.264" />
-        <entry key="..\:/JimmyCodes/AndroidCodes(Java)/COMP90018_TodoList/app/src/main/res/layout/fragment_profile.xml" value="0.21784420289855072" />
-        <entry key="..\:/JimmyCodes/AndroidCodes(Java)/COMP90018_TodoList/app/src/main/res/layout/fragment_register.xml" value="0.21784420289855072" />
-        <entry key="..\:/JimmyCodes/AndroidCodes(Java)/COMP90018_TodoList/app/src/main/res/layout/fragment_time_picker_dialog.xml" value="0.21784420289855072" />
-        <entry key="..\:/JimmyCodes/AndroidCodes(Java)/COMP90018_TodoList/app/src/main/res/layout/fragment_timer.xml" value="0.21784420289855072" />
-        <entry key="..\:/JimmyCodes/AndroidCodes(Java)/COMP90018_TodoList/app/src/main/res/menu/bottom_nav_menu.xml" value="0.25364583333333335" />
-        <entry key="..\:/JimmyCodes/AndroidCodes(Java)/COMP90018_TodoList/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1235" />
-        <entry key="app/src/main/res/drawable/circle_shape.xml" value="0.1" />
-        <entry key="app/src/main/res/drawable/circular_progress_bar.xml" value="0.1" />
-=======
         <entry key="..\:/Android_Studio_WorkSpace/COMP90018_TodoList/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.176" />
         <entry key="..\:/Android_Studio_WorkSpace/COMP90018_TodoList/app/src/main/res/drawable/ic_analysis.xml" value="0.176" />
         <entry key="..\:/Android_Studio_WorkSpace/COMP90018_TodoList/app/src/main/res/drawable/ic_calendar.xml" value="0.173" />
@@ -47,23 +27,18 @@
         <entry key="..\:/Android_Studio_WorkSpace/COMP90018_TodoList/app/src/main/res/layout/fragment_register.xml" value="0.36614583333333334" />
         <entry key="..\:/Android_Studio_WorkSpace/COMP90018_TodoList/app/src/main/res/layout/layout.xml" value="0.17447916666666666" />
         <entry key="..\:/Android_Studio_WorkSpace/COMP90018_TodoList/app/src/main/res/layout/task_list.xml" value="0.17135416666666667" />
-        <entry key="..\:/Android_Studio_WorkSpace/COMP90018_TodoList/app/src/main/res/layout/task_list_item.xml" value="0.1" />
+        <entry key="..\:/Android_Studio_WorkSpace/COMP90018_TodoList/app/src/main/res/layout/task_list_item.xml" value="0.33" />
         <entry key="..\:/Android_Studio_WorkSpace/COMP90018_TodoList/app/src/main/res/menu/importance_menu.xml" value="0.3548717948717949" />
->>>>>>> origin/tom_calender
         <entry key="app/src/main/res/drawable/ic_analysis.xml" value="0.1" />
-        <entry key="app/src/main/res/drawable/ic_timer.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.2553756713867188" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_analysis.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_blank.xml" value="0.11944444444444445" />
         <entry key="app/src/main/res/layout/fragment_calendar.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_login.xml" value="0.1671195652173913" />
-        <entry key="app/src/main/res/layout/fragment_profile.xml" value="0.29077453613281257" />
+        <entry key="app/src/main/res/layout/fragment_profile.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_register.xml" value="0.32837219238281257" />
-        <entry key="app/src/main/res/layout/fragment_time_picker_dialog.xml" value="0.20200368029770774" />
-        <entry key="app/src/main/res/layout/fragment_timer.xml" value="0.242669677734375" />
-        <entry key="app/src/main/res/layout/test.xml" value="0.14540252685546878" />
         <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.1" />
       </map>
     </option>

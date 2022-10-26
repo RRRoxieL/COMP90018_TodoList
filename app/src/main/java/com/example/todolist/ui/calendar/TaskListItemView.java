@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,8 @@ import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.example.todolist.DAO.Task;
 import com.example.todolist.R;
@@ -56,6 +59,16 @@ public class TaskListItemView extends ConstraintLayout {
                     popOutTaskDialog.show(fragment.getParentFragmentManager(), "Task Editor Dialog");
                 }
             });
+            binding.btnTimer.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    NavController controller = Navigation.findNavController(fragment.getActivity(), R.id.nav_host_fragment_activity_main);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("taskID",task.getID());
+                    controller.navigate(R.id.navigation_timer, bundle);
+                }
+            });
+
         }
         isFinished.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

@@ -124,14 +124,16 @@ public class HomeFragment extends Fragment {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
                 //month++;
-                currentDate = createCurrentDate(dayOfMonth,month,year);
+
                 //Toast.makeText(getContext(), currentDate, Toast.LENGTH_SHORT).show();
+
+                removeBindDateTask();
+                currentDate = createCurrentDate(dayOfMonth,month,year);
                 try {
                     dateTask = new DateTask(TomToolkit.getDate(currentDate));
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                removeBindDateTask();
                 bindDateTask();
                 updateView();
                 //Toast.makeText(getContext(),"You selected :"+date,Toast.LENGTH_SHORT).show();
