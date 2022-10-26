@@ -82,7 +82,7 @@ public class DateFragment extends Fragment {
             @Override
             public void onClick(View v) {
 //                TomToolkit.saveToFireBase(dateString,dateTask);
-                Task task = new Task(getActivity(),0,0,"name","default",null,null);
+                Task task = new Task(getActivity(),dateString,0,0,"name","default",null,null);
             }
         });
 

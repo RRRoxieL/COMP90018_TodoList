@@ -9,6 +9,7 @@ import com.example.todolist.tools.TomToolkit;
 
 import java.io.Serializable;
 import java.util.Locale;
+import java.util.UUID;
 
 
 public class Task implements Comparable<Task>, Serializable {
@@ -75,11 +76,8 @@ public class Task implements Comparable<Task>, Serializable {
     private boolean taskDown = false;
     private String picPath;
 
-    public Task (Activity activity, @Nullable int hour, @Nullable int minute, String name, @Nullable String description, @Nullable String importance, @Nullable String picPath){
-        if(IDGENERATOR==0){
-            IDGENERATOR = TomToolkit.readID(activity);
-        }
-        this.ID = String.valueOf(IDGENERATOR++);
+    public Task (Activity activity, String date, @Nullable int hour, @Nullable int minute, String name, @Nullable String description, @Nullable String importance, @Nullable String picPath){
+        generateID(date);
         this.hour = hour;
         this.minute = minute;
         this.name = name;
@@ -176,5 +174,8 @@ public class Task implements Comparable<Task>, Serializable {
         this.ID = ID;
     }
 
+    private void generateID(String date){
+        this.ID = date+":"+UUID.randomUUID().toString().substring(0,4);
+    }
 
 }

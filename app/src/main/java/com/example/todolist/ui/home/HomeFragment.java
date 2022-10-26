@@ -163,7 +163,7 @@ public class HomeFragment extends Fragment {
 //                    Toast.makeText(getContext(), dateTask==null?"true":"false", Toast.LENGTH_SHORT).show();
                     dateTask.addTask(task);
                 }else if(actionTag=='d'){
-//                    Toast.makeText(getContext(),Boolean.toString(dateTask.deleteTask(data.getString("ID"))), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(),Boolean.toString(dateTask.deleteTask(data.getString("ID"))), Toast.LENGTH_SHORT).show();
                 }
 //                Toast.makeText(getContext(), dateTask.toString(), Toast.LENGTH_SHORT).show();
                 saveData();
@@ -205,11 +205,14 @@ public class HomeFragment extends Fragment {
 
     private void updateView() {
         if(dateTask!=null && dateTask.getTasks()!=null){
-            binding.eventLayout.removeAllViews();
-            for (Map.Entry<String,Task> entry: dateTask.getTasks().entrySet()) {
-                TaskListItemView taskListItemView = new TaskListItemView(getContext(),entry.getValue(),currentDate,handler,this);
-                binding.eventLayout.addView(taskListItemView);
+            if(binding!=null && binding.eventLayout!=null){
+                binding.eventLayout.removeAllViews();
+                for (Map.Entry<String,Task> entry: dateTask.getTasks().entrySet()) {
+                    TaskListItemView taskListItemView = new TaskListItemView(getContext(),entry.getValue(),currentDate,handler,this);
+                    binding.eventLayout.addView(taskListItemView);
+                }
             }
+
         }
     }
 

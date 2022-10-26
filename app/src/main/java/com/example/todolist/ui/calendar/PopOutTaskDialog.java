@@ -119,7 +119,7 @@ public class PopOutTaskDialog extends DialogFragment {
                         if(task!=null){
                             task.setPicPath(filename);
                         }else{
-                            task = new Task(getActivity(),1,1,"name","desc",null,null);
+                            task = new Task(getActivity(),date,1,1,"name","desc",null,null);
                             task.setPicPath(filename);
                         }
                     }
@@ -237,7 +237,7 @@ public class PopOutTaskDialog extends DialogFragment {
     private void setTask(){
         if(task==null){
             Toast.makeText(getContext(),binding.importance.getSelectedItem().toString(),Toast.LENGTH_LONG);
-            task = new Task(getActivity(),binding.timepicker.getHour(),binding.timepicker.getMinute(),binding.nameText.getText().toString(),binding.descrptText.getText().toString(),binding.importance.getSelectedItem().toString(),null);
+            task = new Task(getActivity(),date,binding.timepicker.getHour(),binding.timepicker.getMinute(),binding.nameText.getText().toString(),binding.descrptText.getText().toString(),binding.importance.getSelectedItem().toString(),null);
         }else{
             task.setName(binding.nameText.getText().toString());
             task.setDescription(binding.descrptText.getText().toString());
