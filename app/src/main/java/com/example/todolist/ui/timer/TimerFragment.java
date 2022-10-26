@@ -22,14 +22,12 @@ import com.example.todolist.ServiceCallBack;
 import com.example.todolist.databinding.FragmentTimerBinding;
 
 public class TimerFragment extends Fragment implements ServiceCallBack {
-
+    private final int INTERVAL = 1000;
     private final String TAG= "Timer";
 
     private FragmentTimerBinding binding;
-    private static TimerViewModel timerViewModel;
-    private final int INTERVAL = 1000;
+    private TimerViewModel timerViewModel;
     private TimerService timerService;
-
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -39,10 +37,13 @@ public class TimerFragment extends Fragment implements ServiceCallBack {
         binding.setData(timerViewModel);
         binding.setLifecycleOwner(getActivity());
 
+        // Init timer service
         timerService = new TimerService();
         timerService.setCallBack(this);
-        timerViewModel.getTime();
 
+
+        // Set widgets' visibility according to timer's status
+        timerViewModel.getTime();
         if(timerViewModel.isStart()) {
             binding.startBtnTimer.setVisibility(View.INVISIBLE);
             if(timerViewModel.isPause()){
@@ -56,12 +57,7 @@ public class TimerFragment extends Fragment implements ServiceCallBack {
             binding.timeText.setText(timerViewModel.getTimeText());
         }
 
-
-
-
-        /**
-         * adjust time
-         */
+        // Implement pop-up dialog as time picker
         binding.timeText.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
@@ -72,44 +68,46 @@ public class TimerFragment extends Fragment implements ServiceCallBack {
         });
 
 
-        /**
-         * START BUTTON
-         */
+        // START BUTTON
         binding.startBtnTimer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // Init intent and start service
                 Intent startIntent = new Intent(getActivity(), TimerService.class);
                 startIntent.putExtra("remainingTime", timerViewModel.getRemainingTime());
                 getActivity().startService(startIntent);
+
+                // Change timer's status and widget's visibility
                 timerViewModel.setStart(true);
                 binding.startBtnTimer.setVisibility(View.INVISIBLE);
             }
         });
 
 
-        /**
-         * PAUSE BUTTON
-         */
+        // PAUSE BUTTON
         binding.pauseBtnTimer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                timerViewModel.setPause(true);
+                // Stop service
                 getActivity().stopService(new Intent(getActivity(), TimerService.class));
+
+                // Change timer's status and widget's visibility
+                timerViewModel.setPause(true);
                 binding.pauseBtnTimer.setVisibility(View.INVISIBLE);
                 binding.resumeBtnTimer.setVisibility(View.VISIBLE);
             }
         });
 
-        /**
-         * RESUME BUTTON
-         */
+        // RESUME BUTTON
         binding.resumeBtnTimer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                timerViewModel.setPause(false);
+                // Init intent and start service
                 Intent resumeIntent = new Intent(getActivity(), TimerService.class);
                 resumeIntent.putExtra("remainingTime", timerViewModel.getRemainingTime() + 999);
                 getActivity().startService(resumeIntent);
+
+                timerViewModel.setPause(false);
                 binding.resumeBtnTimer.setVisibility(View.INVISIBLE);
                 binding.pauseBtnTimer.setVisibility(View.VISIBLE);
 
@@ -117,6 +115,33 @@ public class TimerFragment extends Fragment implements ServiceCallBack {
         });
 
         return binding.getRoot();
+    }
+
+    // Implement callback function
+    @Override
+    public void callback(String str) {
+        binding.timeText.setText(str);
+        timerViewModel.setRemainingTime(str);
+        binding.progressBar.setProgress(timerViewModel.getProgress());
+
+    }
+
+    // Function for DialogFragment to setting time
+    public void setTime(int time){
+        // Stop service
+        getActivity().stopService(new Intent(getActivity(), TimerService.class));
+
+        // Set time in ViewModel
+        timerViewModel.setDeafultTime(time);
+
+        // Update UI
+        binding.timeText.setText(timerViewModel.getTimeText());
+        binding.progressBar.setProgress(timerViewModel.getProgress());
+        binding.startBtnTimer.setVisibility(View.VISIBLE);
+        binding.pauseBtnTimer.setVisibility(View.VISIBLE);
+        binding.resumeBtnTimer.setVisibility(View.INVISIBLE);
+
+        Log.d("set default time", ""+time);
     }
 
     @Override
@@ -131,30 +156,11 @@ public class TimerFragment extends Fragment implements ServiceCallBack {
         Log.d(TAG,"onPause");
     }
 
-    public void setTime(int time){
-        Log.d("set default time", ""+time);
-        timerViewModel.setDeafultTime(time);
-        binding.timeText.setText(timerViewModel.getTimeText());
-        binding.progressBar.setProgress(timerViewModel.getProgress());
-        binding.startBtnTimer.setVisibility(View.VISIBLE);
-        binding.pauseBtnTimer.setVisibility(View.VISIBLE);
-        binding.resumeBtnTimer.setVisibility(View.INVISIBLE);
-        getActivity().stopService(new Intent(getActivity(), TimerService.class));
-    }
-
-
     @Override
     public void onDestroy() {
         super.onDestroy();
         Log.d(TAG, "onDestroy");
+        // Save remaining time as backup data
         timerViewModel.setRemainingTime((String) binding.timeText.getText());
-    }
-
-    @Override
-    public void callback(String str) {
-        binding.timeText.setText(str);
-        timerViewModel.setRemainingTime(str);
-        binding.progressBar.setProgress(timerViewModel.getProgress());
-
     }
 }

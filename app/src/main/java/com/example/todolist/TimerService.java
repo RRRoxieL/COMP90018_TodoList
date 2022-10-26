@@ -1,13 +1,13 @@
 package com.example.todolist;
 
+import static com.example.todolist.ui.timer.TimePickerDialogFragment.MINUTESTOSECONDS;
+import static com.example.todolist.ui.timer.TimePickerDialogFragment.SECONDSTOMILLIS;
+
 import android.app.Service;
 import android.content.Intent;
 import android.os.CountDownTimer;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Message;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -15,6 +15,7 @@ public class TimerService extends Service {
 
     static ServiceCallBack serviceCallBack;
     private CountDownTimer countDownTimer;
+    private static final int INTERVAL = 1000;
 
     @Nullable
     @Override
@@ -22,25 +23,23 @@ public class TimerService extends Service {
         return null;
     }
 
-    // register call back function
+    // Register call back function
     public void setCallBack(ServiceCallBack serviceCallBack) {
         this.serviceCallBack = serviceCallBack;
     }
 
-    public void onDestroy() {
-        super.onDestroy();
-        countDownTimer.cancel();
-    }
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        // Get the remaining time from TimerFragment
         long millisInFuture = intent.getIntExtra("remainingTime",0);
-        countDownTimer = new CountDownTimer(millisInFuture, 1000) {
+
+        // Set timer according to the remaining time
+        countDownTimer = new CountDownTimer(millisInFuture, INTERVAL) {
             @Override
             public void onTick(long millisUntilFinished) {
-                int seconds = (int) (millisUntilFinished/1000);
-                int minutes = seconds / 60;
-                seconds = seconds % 60;
+                int seconds = (int) (millisUntilFinished / SECONDSTOMILLIS);
+                int minutes = seconds / MINUTESTOSECONDS;
+                seconds = seconds % MINUTESTOSECONDS;
                 String time = String.format("%02d", minutes) + ":" + String.format("%02d", seconds);
                 Log.d("SERVICE", time);
                 serviceCallBack.callback(time);
@@ -48,12 +47,18 @@ public class TimerService extends Service {
 
             @Override
             public void onFinish() {
+                //TODO: firebase related code
                 Log.d("SERVICE", "end counting time");
 
             }
         }.start();
 
         return START_STICKY;
+    }
+
+    public void onDestroy() {
+        super.onDestroy();
+        countDownTimer.cancel();
     }
 
 }
