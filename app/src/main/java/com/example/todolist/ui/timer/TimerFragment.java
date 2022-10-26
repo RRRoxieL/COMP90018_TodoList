@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,10 +33,19 @@ public class TimerFragment extends Fragment implements ServiceCallBack {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
+
         timerViewModel = new ViewModelProvider(getActivity()).get(TimerViewModel.class);
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_timer, container, false);
         binding.setData(timerViewModel);
         binding.setLifecycleOwner(getActivity());
+
+        try{
+            String task = getArguments().getString("test");
+            if(task!= null){
+                binding.taskNameText.setText(task);}
+        }catch(RuntimeException e){
+            Log.d(TAG,"no context");
+        }
 
         // Init timer service
         timerService = new TimerService();
@@ -93,17 +103,8 @@ public class TimerFragment extends Fragment implements ServiceCallBack {
             public void onClick(View view) {
                 // Stop service
                 getActivity().stopService(new Intent(getActivity(), TimerService.class));
-
-                // Reset time
                 timerViewModel.resetTime();
-
-                // Update UI
-                binding.timeText.setText(timerViewModel.getTimeText());
-                binding.progressBar.setProgress(timerViewModel.getProgress());
-                binding.cancelBtnTimer.setVisibility(View.INVISIBLE);
-                binding.startBtnTimer.setVisibility(View.VISIBLE);
-                binding.pauseBtnTimer.setVisibility(View.INVISIBLE);
-                binding.resumeBtnTimer.setVisibility(View.INVISIBLE);
+                resetUI();
             }
         });
 
@@ -147,6 +148,24 @@ public class TimerFragment extends Fragment implements ServiceCallBack {
         timerViewModel.setRemainingTime(str);
         binding.progressBar.setProgress(timerViewModel.getProgress());
 
+        if(str.equals("00:00")){
+            Log.d(TAG,"TIMES UP FROM TIMER FRAGMENT");
+            timerViewModel.resetTime();
+            resetUI();
+            timerViewModel.setStart(false);
+
+//            Toast.makeText(getActivity(), "TIMES UP", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    private void resetUI(){
+        binding.timeText.setText(timerViewModel.getTimeText());
+        binding.progressBar.setProgress(timerViewModel.getProgress());
+        binding.startBtnTimer.setVisibility(View.VISIBLE);
+        binding.cancelBtnTimer.setVisibility(View.INVISIBLE);
+        binding.pauseBtnTimer.setVisibility(View.INVISIBLE);
+        binding.resumeBtnTimer.setVisibility(View.INVISIBLE);
     }
 
     // Function for DialogFragment to setting time
@@ -154,15 +173,11 @@ public class TimerFragment extends Fragment implements ServiceCallBack {
         // Stop service
         getActivity().stopService(new Intent(getActivity(), TimerService.class));
 
-        // Set time in ViewModel
+        // Set default time in ViewModel
         timerViewModel.setDeafultTime(time);
 
-        // Update UI
-        binding.timeText.setText(timerViewModel.getTimeText());
-        binding.progressBar.setProgress(timerViewModel.getProgress());
-        binding.startBtnTimer.setVisibility(View.VISIBLE);
-        binding.pauseBtnTimer.setVisibility(View.VISIBLE);
-        binding.resumeBtnTimer.setVisibility(View.INVISIBLE);
+        resetUI();
+
 
         Log.d("set default time", ""+time);
     }

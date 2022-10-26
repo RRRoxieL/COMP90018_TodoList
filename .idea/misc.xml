@@ -7,8 +7,9 @@
         <entry key="app/src/main/res/drawable/circular_progress_bar.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_analysis.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_timer.xml" value="0.1" />
+        <entry key="app/src/main/res/layout-land/fragment_timer.xml" value="0.13139329805996472" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.2553756713867188" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_analysis.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_blank.xml" value="0.11944444444444445" />
         <entry key="app/src/main/res/layout/fragment_calendar.xml" value="0.1" />

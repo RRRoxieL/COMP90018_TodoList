@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.Gravity;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -48,6 +50,9 @@ public class TimerService extends Service {
             @Override
             public void onFinish() {
                 //TODO: firebase related code
+                Toast timesUpToast = Toast.makeText(getApplicationContext(), "TIMES UP", Toast.LENGTH_SHORT);
+                timesUpToast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
+                timesUpToast.show();
                 Log.d("SERVICE", "end counting time");
 
             }

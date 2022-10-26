@@ -17,58 +17,61 @@
 
         <Button
             android:id="@+id/startBtn_timer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="83dp"
+            android:layout_height="36dp"
             android:text="@string/start"
+            android:textSize="10sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.682" />
-
-
-        <Button
-            android:id="@+id/cancelBtn_Timer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/cancel"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.682" />
+            app:layout_constraintVertical_bias="0.629"
+            tools:ignore="DuplicateClickableBoundsCheck,TouchTargetSizeCheck" />
 
         <Button
             android:id="@+id/pauseBtn_timer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="83dp"
+            android:layout_height="36dp"
             android:text="@string/pause"
+            android:textSize="10sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.793" />
+            app:layout_constraintVertical_bias="0.762"
+            tools:ignore="TouchTargetSizeCheck,DuplicateClickableBoundsCheck" />
+
+        <Button
+            android:id="@+id/cancelBtn_Timer"
+            android:layout_width="83dp"
+            android:layout_height="36dp"
+            android:text="@string/cancel"
+            android:textSize="10sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.629"
+            tools:ignore="TouchTargetSizeCheck" />
 
         <Button
             android:id="@+id/resumeBtn_timer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="83dp"
+            android:layout_height="36dp"
             android:text="@string/resume"
+            android:textSize="10sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.793" />
+            app:layout_constraintVertical_bias="0.762"
+            tools:ignore="TouchTargetSizeCheck" />
 
         <ProgressBar
             android:id="@+id/progressBar"
             style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="196dp"
-            android:layout_height="195dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:background="@drawable/circle_shape"
             android:indeterminate="false"
             android:max="100"
@@ -76,29 +79,29 @@
             android:progressDrawable="@drawable/circular_progress_bar"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.345" />
+            app:layout_constraintVertical_bias="0.306" />
 
         <TextView
             android:id="@+id/timeText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@{data.timeText}"
-            android:textSize="24sp"
+            android:textSize="20sp"
             app:layout_constraintBottom_toTopOf="@+id/startBtn_timer"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.642" />
+            app:layout_constraintVertical_bias="0.66" />
 
         <TextView
             android:id="@+id/taskNameText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=""
+            android:text="test"
             app:layout_constraintBottom_toTopOf="@+id/progressBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"

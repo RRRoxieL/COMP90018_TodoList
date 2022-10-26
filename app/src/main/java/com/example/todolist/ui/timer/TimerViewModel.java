@@ -11,10 +11,11 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 public class TimerViewModel extends ViewModel{
-    private static final int DEFAULTTIME = 10;
+    //    private static final int DEFAULTTIME = 10;
     private final String TAG = "Timer_View";
 
-    private  int deafultTime = DEFAULTTIME * MINUTESTOSECONDS * SECONDSTOMILLIS;
+    //    private  int deafultTime = DEFAULTTIME * MINUTESTOSECONDS * SECONDSTOMILLIS;
+    private  int deafultTime = 5000;
     private  MutableLiveData<Integer> targetTime;
     private  MutableLiveData<Integer> remainingTime;
     public String timeText;
@@ -57,11 +58,11 @@ public class TimerViewModel extends ViewModel{
 
     public MutableLiveData<Integer> getTime() {
         if(targetTime == null){
-                targetTime = new MutableLiveData<>();
-                targetTime.setValue(deafultTime);
-                remainingTime = new MutableLiveData<>();
-                remainingTime.setValue(deafultTime);
-                updateTimeText();
+            targetTime = new MutableLiveData<>();
+            targetTime.setValue(deafultTime);
+            remainingTime = new MutableLiveData<>();
+            remainingTime.setValue(deafultTime);
+            updateTimeText();
         }
         return targetTime;
     }
