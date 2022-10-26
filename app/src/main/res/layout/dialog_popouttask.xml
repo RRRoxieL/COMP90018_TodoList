@@ -144,7 +144,7 @@
             android:id="@+id/img"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="100dp"
+            android:layout_height="150dp"
             android:src="@drawable/ic_frag_import"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="15dp"/>
