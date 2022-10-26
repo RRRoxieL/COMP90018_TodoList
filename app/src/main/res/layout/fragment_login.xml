@@ -12,7 +12,7 @@
         android:layout_width="260dp"
         android:layout_height="50dp"
         android:ems="10"
-        android:hint="User Name"
+        android:hint="Email"
         android:inputType="textWebEmailAddress|textPersonName"
         android:minHeight="48dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
@@ -20,7 +20,7 @@
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.74" />
+        app:layout_constraintVertical_bias="0.914" />
 
     <EditText
         android:id="@+id/login_password"
@@ -30,12 +30,12 @@
         android:hint="Password"
         android:inputType="textPassword"
         android:minHeight="48dp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/login_username"
-        app:layout_constraintVertical_bias="0.975" />
+        app:layout_constraintVertical_bias="0.085" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
@@ -52,10 +52,10 @@
         android:text="Login"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.266"
+        app:layout_constraintHorizontal_bias="0.53"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline"
-        app:layout_constraintVertical_bias="0.187" />
+        app:layout_constraintVertical_bias="0.312" />
 
     <Button
         android:id="@+id/btn_register"
@@ -64,9 +64,22 @@
         android:text="Register"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.729"
+        app:layout_constraintHorizontal_bias="0.53"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline"
-        app:layout_constraintVertical_bias="0.187" />
+        app:layout_constraintVertical_bias="0.558" />
+
+    <TextView
+        android:id="@+id/login_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sign In"
+        android:textSize="34sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.259" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

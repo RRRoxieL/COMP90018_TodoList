@@ -1,108 +1,78 @@
 package com.example.todolist.ui.timer;
 
 
-
-import static com.example.todolist.ui.timer.TimePickerDialogFragment.MINUTESTOSECONDS;
-import static com.example.todolist.ui.timer.TimePickerDialogFragment.SECONDSTOMILLIS;
-
+import android.os.CountDownTimer;
 import android.util.Log;
+import android.widget.Chronometer;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 public class TimerViewModel extends ViewModel{
-    private static final int DEFAULTTIME = 10;
-    private final String TAG = "Timer_View";
 
-    private  int deafultTime = DEFAULTTIME * MINUTESTOSECONDS * SECONDSTOMILLIS;
-    private  MutableLiveData<Integer> targetTime;
-    private  MutableLiveData<Integer> remainingTime;
-    public String timeText;
-    public int progress;
-
+    private int deafultTime = 25*60*1000;
+    private final static String TAG = "Timer_View";
+    private MutableLiveData<Integer> targetTime;
+    private MutableLiveData<Integer> remainingTime;
+    private long timeWhenStopped;
+    private Chronometer backup;
     private boolean isStart;
     private boolean isPause;
-
-    public void setDeafultTime(int time){
-        deafultTime = time;
-        remainingTime.setValue(time);
-        targetTime.setValue(time);
-        updateTimeText();
-        updateProgress();
-    }
 
     public void resetTime(){
         targetTime.setValue(deafultTime);
         remainingTime.setValue(deafultTime);
-        updateProgress();
-        updateTimeText();
     }
 
-    public String getTimeText(){
-        return this.timeText;
-    }
-
-    public int getProgress(){
-        return this.progress;
-    }
-
-    private void updateTimeText(){
-        this.timeText = timeToText(this.remainingTime.getValue());
-    }
-
-    public void updateProgress(){
-        int passTime = targetTime.getValue() - remainingTime.getValue();
-        this.progress =  passTime * 100 / targetTime.getValue();
+    public void setDeafultTime(int time){
+        deafultTime = time;
     }
 
     public MutableLiveData<Integer> getTime() {
         if(targetTime == null){
-                targetTime = new MutableLiveData<>();
-                targetTime.setValue(deafultTime);
-                remainingTime = new MutableLiveData<>();
-                remainingTime.setValue(deafultTime);
-                updateTimeText();
+            targetTime = new MutableLiveData<>();
+            targetTime.setValue(deafultTime);
+            remainingTime = new MutableLiveData<>();
+            remainingTime.setValue(deafultTime);
         }
         return targetTime;
     }
 
-    public void setRemainingTime(String timeString){
-        int remain = textToTime(timeString)==0? deafultTime : textToTime(timeString);
+
+
+    public int getProgress(){
+        int passTime = targetTime.getValue() - remainingTime.getValue();
+        return passTime * 100 / targetTime.getValue();
+    }
+
+    public void passTimer(Chronometer chronometer){
+        backup = chronometer;
+        backup.start();
+    }
+
+    public void setRemainingTime(Chronometer chronometer){
+        int remain = chronometerToTime(chronometer)==0? deafultTime : chronometerToTime(chronometer);
         remainingTime.setValue(remain);
-        updateProgress();
-        updateTimeText();
     }
 
-    public String timeToText(long time){
-        int seconds = (int) (time / SECONDSTOMILLIS);
-        int minutes = seconds / MINUTESTOSECONDS;
-        seconds = seconds % MINUTESTOSECONDS;
-        return String.format("%02d", minutes) + ":" + String.format("%02d", seconds);
-
-    }
-
-    public int textToTime(String timeString){
-        String[] leftTime = timeString.split(":");
+    public int chronometerToTime(Chronometer chronometer){
+        String[] leftTime = chronometer.getText().toString().split(":");
         int minute = Integer.parseInt(leftTime[0]);
         int second = Integer.parseInt(leftTime[1]);
-        if(minute <= 0 && second == 0){
+        if(minute<=0 && second==0){
             return 0;
         }else{
-            return (minute * MINUTESTOSECONDS + second) * SECONDSTOMILLIS;
+            return (minute * 60 + second) * 1000;
         }
     }
 
-
-    public int getRemainingTime(){
-        return remainingTime.getValue();
+    public int getTimer(){
+        return chronometerToTime(backup);
     }
 
 
     public boolean isStart() {
         return isStart;
-    }
-    public boolean isPause(){
-        return isPause;
     }
 
     public void setStart(boolean start) {
@@ -113,6 +83,9 @@ public class TimerViewModel extends ViewModel{
         isPause = pause;
     }
 
+    public boolean isPause(){
+        return isPause;
+    }
 
     @Override
     protected void onCleared() {
@@ -120,4 +93,11 @@ public class TimerViewModel extends ViewModel{
         Log.d(TAG, "cleared");
     }
 
+    public long getStopTime() {
+        return timeWhenStopped;
+    }
+
+    public void setStopTime(long timeWhenStopped) {
+        this.timeWhenStopped = timeWhenStopped;
+    }
 }

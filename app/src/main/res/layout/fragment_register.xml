@@ -8,19 +8,19 @@
     tools:context=".ui.register.RegisterFragment">
 
     <EditText
-        android:id="@+id/register_username"
+        android:id="@+id/register_email"
         android:layout_width="260dp"
         android:layout_height="50dp"
         android:ems="10"
-        android:hint="User Name"
+        android:hint="Email"
         android:inputType="textWebEmailAddress|textPersonName"
         android:minHeight="48dp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintHorizontal_bias="0.49"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.553" />
+        app:layout_constraintVertical_bias="0.33" />
 
     <EditText
         android:id="@+id/register_password"
@@ -30,27 +30,27 @@
         android:hint="Password"
         android:inputType="textPassword"
         android:minHeight="48dp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.49"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/register_username"
-        app:layout_constraintVertical_bias="0.195" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.477" />
 
     <EditText
         android:id="@+id/register_passwordCheck"
         android:layout_width="260dp"
         android:layout_height="50dp"
         android:ems="10"
-        android:hint="Password"
+        android:hint="Confirm Password"
         android:inputType="textPassword"
         android:minHeight="48dp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.49"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/register_username"
-        app:layout_constraintVertical_bias="0.956" />
+        app:layout_constraintTop_toBottomOf="@+id/register_email"
+        app:layout_constraintVertical_bias="0.376" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
@@ -70,6 +70,19 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline"
-        app:layout_constraintVertical_bias="0.17" />
+        app:layout_constraintVertical_bias="0.552" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Register"
+        android:textSize="34sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.216" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
