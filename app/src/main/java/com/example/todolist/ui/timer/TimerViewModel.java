@@ -34,6 +34,8 @@ public class TimerViewModel extends ViewModel{
     public void resetTime(){
         targetTime.setValue(deafultTime);
         remainingTime.setValue(deafultTime);
+        updateProgress();
+        updateTimeText();
     }
 
     public String getTimeText(){

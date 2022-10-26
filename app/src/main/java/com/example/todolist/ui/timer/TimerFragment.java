@@ -53,7 +53,9 @@ public class TimerFragment extends Fragment implements ServiceCallBack {
             }
 //            binding.progressBar.setProgress(timerViewModel.getProgress());
         }else{
+            binding.cancelBtnTimer.setVisibility(View.INVISIBLE);
             binding.resumeBtnTimer.setVisibility(View.INVISIBLE);
+            binding.pauseBtnTimer.setVisibility(View.INVISIBLE);
             binding.timeText.setText(timerViewModel.getTimeText());
         }
 
@@ -80,9 +82,30 @@ public class TimerFragment extends Fragment implements ServiceCallBack {
                 // Change timer's status and widget's visibility
                 timerViewModel.setStart(true);
                 binding.startBtnTimer.setVisibility(View.INVISIBLE);
+                binding.pauseBtnTimer.setVisibility(View.VISIBLE);
+                binding.cancelBtnTimer.setVisibility(View.VISIBLE);
             }
         });
 
+        // CANCEL BUTTON
+        binding.cancelBtnTimer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Stop service
+                getActivity().stopService(new Intent(getActivity(), TimerService.class));
+
+                // Reset time
+                timerViewModel.resetTime();
+
+                // Update UI
+                binding.timeText.setText(timerViewModel.getTimeText());
+                binding.progressBar.setProgress(timerViewModel.getProgress());
+                binding.cancelBtnTimer.setVisibility(View.INVISIBLE);
+                binding.startBtnTimer.setVisibility(View.VISIBLE);
+                binding.pauseBtnTimer.setVisibility(View.INVISIBLE);
+                binding.resumeBtnTimer.setVisibility(View.INVISIBLE);
+            }
+        });
 
         // PAUSE BUTTON
         binding.pauseBtnTimer.setOnClickListener(new View.OnClickListener() {
