@@ -123,9 +123,9 @@ public class HomeFragment extends Fragment {
         homeCalendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
-                month++;
-                currentDate = String.format("Date: %02d-%02d-%04d",dayOfMonth,month,year);
-                Toast.makeText(getContext(), currentDate, Toast.LENGTH_SHORT).show();
+                //month++;
+                currentDate = createCurrentDate(dayOfMonth,month,year);
+                //Toast.makeText(getContext(), currentDate, Toast.LENGTH_SHORT).show();
                 try {
                     dateTask = new DateTask(TomToolkit.getDate(currentDate));
                 } catch (ParseException e) {
@@ -142,7 +142,7 @@ public class HomeFragment extends Fragment {
                 homeCalendar.setLayoutParams(lp);
                 pulldown.setVisibility(View.VISIBLE);
 
-                dateText.setText(currentDate);
+                dateText.setText("Date: "+currentDate);
 
                 layout.removeAllViews();
             }
@@ -196,7 +196,7 @@ public class HomeFragment extends Fragment {
 
 
 
-        dateText.setText(currentDate);
+        dateText.setText("Date: "+currentDate);
         dutyText.setText(getDutyInfo());
         return root;
     }
@@ -212,6 +212,7 @@ public class HomeFragment extends Fragment {
     }
 
     private String createCurrentDate(int day, int month, int year){
+        month++;
         return String.format("%02d-%02d-%04d",day,month,year);
     }
 
