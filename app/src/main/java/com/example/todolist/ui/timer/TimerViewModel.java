@@ -1,30 +1,24 @@
 package com.example.todolist.ui.timer;
 
-
-
 import static com.example.todolist.ui.timer.TimePickerDialogFragment.MINUTESTOSECONDS;
 import static com.example.todolist.ui.timer.TimePickerDialogFragment.SECONDSTOMILLIS;
-
 import android.util.Log;
-
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class TimerViewModel extends ViewModel{
-    //    private static final int DEFAULTTIME = 10;
+public class TimerViewModel extends ViewModel {
+    private static final int DEFAULTTIME = 10;
     private final String TAG = "Timer_View";
+    private int deafultTime = DEFAULTTIME * MINUTESTOSECONDS * SECONDSTOMILLIS;
 
-    //    private  int deafultTime = DEFAULTTIME * MINUTESTOSECONDS * SECONDSTOMILLIS;
-    private  int deafultTime = 5000;
-    private  MutableLiveData<Integer> targetTime;
-    private  MutableLiveData<Integer> remainingTime;
+    private MutableLiveData<Integer> targetTime;
+    private MutableLiveData<Integer> remainingTime;
     public String timeText;
     public int progress;
-
     private boolean isStart;
     private boolean isPause;
 
-    public void setDeafultTime(int time){
+    public void setDeafultTime(int time) {
         deafultTime = time;
         remainingTime.setValue(time);
         targetTime.setValue(time);
@@ -32,32 +26,32 @@ public class TimerViewModel extends ViewModel{
         updateProgress();
     }
 
-    public void resetTime(){
+    public void resetTime() {
         targetTime.setValue(deafultTime);
         remainingTime.setValue(deafultTime);
         updateProgress();
         updateTimeText();
     }
 
-    public String getTimeText(){
+    public String getTimeText() {
         return this.timeText;
     }
 
-    public int getProgress(){
+    public int getProgress() {
         return this.progress;
     }
 
-    private void updateTimeText(){
+    private void updateTimeText() {
         this.timeText = timeToText(this.remainingTime.getValue());
     }
 
-    public void updateProgress(){
+    public void updateProgress() {
         int passTime = targetTime.getValue() - remainingTime.getValue();
-        this.progress =  passTime * 100 / targetTime.getValue();
+        this.progress = passTime * 100 / targetTime.getValue();
     }
 
     public MutableLiveData<Integer> getTime() {
-        if(targetTime == null){
+        if (targetTime == null) {
             targetTime = new MutableLiveData<>();
             targetTime.setValue(deafultTime);
             remainingTime = new MutableLiveData<>();
@@ -67,14 +61,14 @@ public class TimerViewModel extends ViewModel{
         return targetTime;
     }
 
-    public void setRemainingTime(String timeString){
-        int remain = textToTime(timeString)==0? deafultTime : textToTime(timeString);
+    public void setRemainingTime(String timeString) {
+        int remain = textToTime(timeString) == 0 ? deafultTime : textToTime(timeString);
         remainingTime.setValue(remain);
         updateProgress();
         updateTimeText();
     }
 
-    public String timeToText(long time){
+    public String timeToText(long time) {
         int seconds = (int) (time / SECONDSTOMILLIS);
         int minutes = seconds / MINUTESTOSECONDS;
         seconds = seconds % MINUTESTOSECONDS;
@@ -82,27 +76,32 @@ public class TimerViewModel extends ViewModel{
 
     }
 
-    public int textToTime(String timeString){
+    public int textToTime(String timeString) {
         String[] leftTime = timeString.split(":");
         int minute = Integer.parseInt(leftTime[0]);
         int second = Integer.parseInt(leftTime[1]);
-        if(minute <= 0 && second == 0){
+        if (minute <= 0 && second == 0) {
             return 0;
-        }else{
+        } else {
             return (minute * MINUTESTOSECONDS + second) * SECONDSTOMILLIS;
         }
     }
 
 
-    public int getRemainingTime(){
+    public int getRemainingTime() {
         return remainingTime.getValue();
+    }
+
+    public int getTargetTime() {
+        return targetTime.getValue();
     }
 
 
     public boolean isStart() {
         return isStart;
     }
-    public boolean isPause(){
+
+    public boolean isPause() {
         return isPause;
     }
 
@@ -110,10 +109,9 @@ public class TimerViewModel extends ViewModel{
         isStart = start;
     }
 
-    public void setPause(boolean pause){
+    public void setPause(boolean pause) {
         isPause = pause;
     }
-
 
     @Override
     protected void onCleared() {

@@ -7,62 +7,62 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-
 import com.example.todolist.TimerService;
 import com.example.todolist.R;
-
 import com.example.todolist.ServiceCallBack;
 import com.example.todolist.databinding.FragmentTimerBinding;
 
 public class TimerFragment extends Fragment implements ServiceCallBack {
     private final int INTERVAL = 1000;
-    private final String TAG= "Timer";
+    private final String TAG = "Timer";
 
     private FragmentTimerBinding binding;
     private TimerViewModel timerViewModel;
     private TimerService timerService;
+    private String taskID;
+    private String taskName;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-
 
         timerViewModel = new ViewModelProvider(getActivity()).get(TimerViewModel.class);
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_timer, container, false);
         binding.setData(timerViewModel);
         binding.setLifecycleOwner(getActivity());
 
-        try{
-            String task = getArguments().getString("test");
-            if(task!= null){
-                binding.taskNameText.setText(task);}
-        }catch(RuntimeException e){
-            Log.d(TAG,"no context");
+        try {
+            String taskInfo = getArguments().getString("taskInfo");
+            String[] taskInfos = taskInfo.split("$");
+            this.taskID = taskInfos[0];
+            this.taskName = taskInfos[1];
+
+            if (taskName != null) {
+                binding.taskNameText.setText(taskName);
+            }
+        } catch (RuntimeException e) {
+            Log.d(TAG, "no context");
         }
 
         // Init timer service
         timerService = new TimerService();
         timerService.setCallBack(this);
 
-
         // Set widgets' visibility according to timer's status
         timerViewModel.getTime();
-        if(timerViewModel.isStart()) {
+        if (timerViewModel.isStart()) {
             binding.startBtnTimer.setVisibility(View.INVISIBLE);
-            if(timerViewModel.isPause()){
+            if (timerViewModel.isPause()) {
                 binding.pauseBtnTimer.setVisibility(View.INVISIBLE);
-            }else {
+            } else {
                 binding.resumeBtnTimer.setVisibility(View.INVISIBLE);
             }
-//            binding.progressBar.setProgress(timerViewModel.getProgress());
-        }else{
+        } else {
             binding.cancelBtnTimer.setVisibility(View.INVISIBLE);
             binding.resumeBtnTimer.setVisibility(View.INVISIBLE);
             binding.pauseBtnTimer.setVisibility(View.INVISIBLE);
@@ -85,9 +85,7 @@ public class TimerFragment extends Fragment implements ServiceCallBack {
             @Override
             public void onClick(View view) {
                 // Init intent and start service
-                Intent startIntent = new Intent(getActivity(), TimerService.class);
-                startIntent.putExtra("remainingTime", timerViewModel.getRemainingTime());
-                getActivity().startService(startIntent);
+                initIntentAndStartService();
 
                 // Change timer's status and widget's visibility
                 timerViewModel.setStart(true);
@@ -127,10 +125,8 @@ public class TimerFragment extends Fragment implements ServiceCallBack {
             @Override
             public void onClick(View view) {
                 // Init intent and start service
-                Intent resumeIntent = new Intent(getActivity(), TimerService.class);
-                resumeIntent.putExtra("remainingTime", timerViewModel.getRemainingTime() + 999);
-                getActivity().startService(resumeIntent);
-
+                initIntentAndStartService();
+                // Change widgets' visibility accordingly
                 timerViewModel.setPause(false);
                 binding.resumeBtnTimer.setVisibility(View.INVISIBLE);
                 binding.pauseBtnTimer.setVisibility(View.VISIBLE);
@@ -148,18 +144,16 @@ public class TimerFragment extends Fragment implements ServiceCallBack {
         timerViewModel.setRemainingTime(str);
         binding.progressBar.setProgress(timerViewModel.getProgress());
 
-        if(str.equals("00:00")){
-            Log.d(TAG,"TIMES UP FROM TIMER FRAGMENT");
+        if (str.equals("00:00")) {
+            Log.d(TAG, "TIMES UP FROM TIMER FRAGMENT");
             timerViewModel.resetTime();
             resetUI();
             timerViewModel.setStart(false);
-
-//            Toast.makeText(getActivity(), "TIMES UP", Toast.LENGTH_SHORT).show();
         }
-
     }
 
-    private void resetUI(){
+    // Reset UI after timer is canceled or time is reset
+    private void resetUI() {
         binding.timeText.setText(timerViewModel.getTimeText());
         binding.progressBar.setProgress(timerViewModel.getProgress());
         binding.startBtnTimer.setVisibility(View.VISIBLE);
@@ -169,7 +163,7 @@ public class TimerFragment extends Fragment implements ServiceCallBack {
     }
 
     // Function for DialogFragment to setting time
-    public void setTime(int time){
+    public void setTime(int time) {
         // Stop service
         getActivity().stopService(new Intent(getActivity(), TimerService.class));
 
@@ -177,21 +171,30 @@ public class TimerFragment extends Fragment implements ServiceCallBack {
         timerViewModel.setDeafultTime(time);
 
         resetUI();
+        Log.d("set default time", "" + time);
+    }
 
-
-        Log.d("set default time", ""+time);
+    public void initIntentAndStartService() {
+        Intent intent = new Intent(getActivity(), TimerService.class);
+        intent.putExtra("remainingTime", timerViewModel.getRemainingTime());
+        intent.putExtra("targetTime", timerViewModel.getTargetTime());
+        if (taskName != null & taskID != null) {
+            intent.putExtra("taskName", this.taskName);
+            intent.putExtra("taskID", this.taskID);
+        }
+        getActivity().startService(intent);
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG,"onCreate");
+        Log.d(TAG, "onCreate");
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        Log.d(TAG,"onPause");
+        Log.d(TAG, "onPause");
     }
 
     @Override

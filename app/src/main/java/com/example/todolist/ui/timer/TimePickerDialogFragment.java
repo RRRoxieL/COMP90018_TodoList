@@ -22,7 +22,7 @@ public class TimePickerDialogFragment extends DialogFragment {
     private static final int MINTIME = 10;
     private static final int MAXTIME = 60;
     private static final int DEFAULTTIME = 15;
-    public  static final int SECONDSTOMILLIS = 1000;
+    public static final int SECONDSTOMILLIS = 1000;
     public static final int MINUTESTOSECONDS = 60;
 
     // Use view binding
@@ -50,7 +50,7 @@ public class TimePickerDialogFragment extends DialogFragment {
             public void onClick(View view) {
                 if (getParentFragment() != null) {
                     // Pass chosen time back to TimerFragment
-                    ((TimerFragment) getParentFragment()).setTime(binding.numberPicker.getValue() * MINUTESTOSECONDS * SECONDSTOMILLIS );
+                    ((TimerFragment) getParentFragment()).setTime(binding.numberPicker.getValue() * MINUTESTOSECONDS * SECONDSTOMILLIS);
                 }
                 // Hide dialog afterwards
                 getDialog().hide();
