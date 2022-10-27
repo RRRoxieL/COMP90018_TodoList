@@ -20,8 +20,8 @@ public class ProfileFragment extends Fragment {
 
     private FragmentProfileBinding binding;
     Button logoutBtn;
-    TextView email;
-    TextView password;
+//    TextView email;
+//    TextView password;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -40,10 +40,10 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        email = root.findViewById(R.id.profile_email);
-        password = root.findViewById(R.id.profile_password);
-        email.setText("Email: "+"Here is the user email");
-        password.setText("Password: "+"Here is the user password");
+//        email = root.findViewById(R.id.profile_email);
+//        password = root.findViewById(R.id.profile_password);
+//        email.setText("Email: "+"Here is the user email");
+//        password.setText("Password: "+"Here is the user password");
 
         return root;
     }
