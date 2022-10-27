@@ -31,6 +31,7 @@ import androidx.annotation.Nullable;
 
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -40,6 +41,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -81,6 +83,7 @@ public class PopOutTaskDialog extends DialogFragment {
     private Handler handler;
     private Task task;
     private ActivityResultLauncher<Intent> intentActivityResultLauncher;
+    private ActivityResultLauncher<Intent> intentActivityResultLauncher1;
     private Uri imageUri;
 
     public PopOutTaskDialog(String date, Handler handler) {
@@ -116,6 +119,32 @@ public class PopOutTaskDialog extends DialogFragment {
                         String filename = createFileName();
                         TomToolkit.savePicture(imageUri,filename,getContext());
                         imageView.setImageURI(imageUri);
+                        if(task!=null){
+                            task.setPicPath(filename);
+                        }else{
+                            task = new Task(getActivity(),date,1,1,"name","desc",null,null);
+                            task.setPicPath(filename);
+                        }
+                    }
+
+                }
+            }
+        });
+        intentActivityResultLauncher1 = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+            @Override
+            public void onActivityResult(ActivityResult result) {
+                Intent data = result.getData();
+                int resultCode = result.getResultCode();
+                if (resultCode == RESULT_OK && data != null) {
+                    Bitmap img = (Bitmap)data.getExtras().get("data");
+                    ImageView imageView = (ImageView)getView().findViewById(R.id.img);
+                    imageUri = Uri.parse("default");
+                    if(imageView==null || imageUri==null){
+                        Toast.makeText(getContext(), "please select a picture", Toast.LENGTH_SHORT).show();
+                    }else{
+                        String filename = createFileName();
+                        TomToolkit.savePicture(img,filename,getContext());
+                        imageView.setImageBitmap(img);
                         if(task!=null){
                             task.setPicPath(filename);
                         }else{
@@ -187,10 +216,31 @@ public class PopOutTaskDialog extends DialogFragment {
             @SuppressLint("UseCompatLoadingForDrawables")
             @Override
             public void onClick(View v) {
-                Intent galleryIntent = new Intent();
-                galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
-                galleryIntent.setType("image/*");
-                intentActivityResultLauncher.launch(galleryIntent);
+                PopupMenu popupMenu = new PopupMenu(getContext(),binding.img);
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        String title = item.getTitle().toString();
+                        switch (title){
+                            case "FROM LOCAL FILE":
+                                Intent galleryIntent = new Intent();
+                                galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
+                                galleryIntent.setType("image/*");
+                                intentActivityResultLauncher.launch(galleryIntent);
+                                break;
+                            case "FROM CAMERA":
+                                Intent galleryIntent1 = new Intent();
+                                galleryIntent1.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+//                                galleryIntent1.setType("image/*");
+                                intentActivityResultLauncher1.launch(galleryIntent1);
+                                break;
+                        }
+                        return false;
+                    }
+                });
+                popupMenu.inflate(R.menu.popout_img_selector);
+                popupMenu.show();
+
             }
         });
 
