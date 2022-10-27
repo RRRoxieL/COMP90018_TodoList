@@ -178,4 +178,11 @@ public class Task implements Comparable<Task>, Serializable {
         this.ID = date+":"+UUID.randomUUID().toString().substring(0,4);
     }
 
+    public boolean getTaskdown(){
+        return this.taskDown;
+    }
+    public void setTaskdown(boolean value){
+        this.taskDown = value;
+    }
+
 }

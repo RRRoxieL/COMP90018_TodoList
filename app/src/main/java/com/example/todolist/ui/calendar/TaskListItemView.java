@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
@@ -27,7 +28,6 @@ import com.example.todolist.databinding.TaskListItemBinding;
 
 public class TaskListItemView extends ConstraintLayout {
     private TaskListItemBinding binding;
-
     public TaskListItemView(Context context, Task task, String dateString, Handler handler, Fragment fragment) {
         super(context);
 
@@ -41,9 +41,58 @@ public class TaskListItemView extends ConstraintLayout {
         TextView desc = binding.descText;
 
         if(task!=null){
+
             isFinished.setChecked(task.isTaskDown());
+            if(isFinished.isChecked()){
+                taskItem.setBackgroundColor(Color.parseColor("#cccccc"));
+                title.setTextColor(Color.parseColor("#999999"));
+                desc.setTextColor(Color.parseColor("#999999"));
+                // 添加删除线
+                title.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);  //中划线，会有锯齿
+                title.getPaint().setAntiAlias(true);
+                timer.setVisibility(INVISIBLE);
+            }
             title.setText(task.getName());
             desc.setText(task.getDescription());
+            isFinished.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked){
+                        // 选中（已完成），背景为灰色
+                        taskItem.setBackgroundColor(Color.parseColor("#cccccc"));
+                        title.setTextColor(Color.parseColor("#999999"));
+                        desc.setTextColor(Color.parseColor("#999999"));
+                        // 添加删除线
+                        title.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);  //中划线，会有锯齿
+                        title.getPaint().setAntiAlias(true);
+                        timer.setVisibility(INVISIBLE);
+                        //dutyFinished++;
+                    } else {
+                        // 没选中（未完成），背景为蓝色
+                        taskItem.setBackgroundColor(Color.parseColor("#00ffff"));
+                        title.setTextColor(Color.parseColor("#636363"));
+                        desc.setTextColor(Color.parseColor("#636363"));
+                        // 清除删除线
+                        title.getPaint().setFlags(0);
+                        title.invalidate();
+                        timer.setVisibility(VISIBLE);
+                        //dutyFinished--;
+                    }
+                    // 重新设置字体加粗
+                    //title.getPaint().setFakeBoldText(true);
+
+                    //setDutyText();
+                    Message message = handler.obtainMessage();
+                    task.setTaskdown(isFinished.isChecked());
+                    Toast.makeText(getContext(),String.valueOf(task.isTaskDown()),Toast.LENGTH_LONG).show();
+                    Bundle bundle = new Bundle();
+                    bundle.putChar("actionTag",'a');
+                    bundle.putSerializable("task",task);
+                    message.setData(bundle);
+                    handler.sendMessage(message);
+                }
+            });
+
             timer.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -70,36 +119,7 @@ public class TaskListItemView extends ConstraintLayout {
             });
 
         }
-        isFinished.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked){
-                    // 选中（已完成），背景为灰色
-                    taskItem.setBackgroundColor(Color.parseColor("#cccccc"));
-                    title.setTextColor(Color.parseColor("#999999"));
-                    desc.setTextColor(Color.parseColor("#999999"));
-                    // 添加删除线
-                    title.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);  //中划线，会有锯齿
-                    title.getPaint().setAntiAlias(true);
-                    timer.setVisibility(INVISIBLE);
-                    //dutyFinished++;
-                } else {
-                    // 没选中（未完成），背景为蓝色
-                    taskItem.setBackgroundColor(Color.parseColor("#00ffff"));
-                    title.setTextColor(Color.parseColor("#636363"));
-                    desc.setTextColor(Color.parseColor("#636363"));
-                    // 清除删除线
-                    title.getPaint().setFlags(0);
-                    title.invalidate();
-                    timer.setVisibility(VISIBLE);
-                    //dutyFinished--;
-                }
-                // 重新设置字体加粗
-                //title.getPaint().setFakeBoldText(true);
 
-                //setDutyText();
-            }
-        });
 
     }
 

@@ -166,6 +166,7 @@ public class PopOutTaskDialog extends DialogFragment {
         Window win = getDialog().getWindow();
         win.setBackgroundDrawable(new ColorDrawable(Color.WHITE));
         win.setGravity(Gravity.BOTTOM);
+
 //        registerForContextMenu(binding.importance);
 
 

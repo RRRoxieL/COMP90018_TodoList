@@ -22,7 +22,13 @@ public class DateTask implements Serializable{
         if(tasks==null){
             tasks = new HashMap<>();
         }
+
         if (tasks.containsKey(task.getID())){
+            Task task1 = tasks.get(task.getID());
+            if(task.getTaskdown()!=task1.getTaskdown()){
+
+            }
+            tasks.put(task.getID(),task);
             return false;
         }else{
             tasks.put(task.getID(),task);

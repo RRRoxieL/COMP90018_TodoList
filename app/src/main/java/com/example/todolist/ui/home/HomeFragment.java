@@ -196,7 +196,8 @@ public class HomeFragment extends Fragment {
             }
         });
 
-
+        dutyFinished = dateTask.getFinishedTaskNum();
+        dutyAmount = dateTask.getAllTaskNum();
 
         dateText.setText("Date: "+currentDate);
         dutyText.setText(getDutyInfo());
