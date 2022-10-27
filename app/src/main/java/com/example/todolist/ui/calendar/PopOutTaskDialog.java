@@ -40,6 +40,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -89,9 +90,6 @@ public class PopOutTaskDialog extends DialogFragment {
     public PopOutTaskDialog(String date, Handler handler) {
         this.date = date;
         this.handler=handler;
-
-        //我也不知道为什么但是就是把这个类下面所有代码都注释掉留个constructor，下面这行代码会导致崩溃
-//       this.task = new Task(getActivity(),0,0,"name","default",null,null);
 
     }
 
@@ -166,10 +164,6 @@ public class PopOutTaskDialog extends DialogFragment {
         Window win = getDialog().getWindow();
         win.setBackgroundDrawable(new ColorDrawable(Color.WHITE));
         win.setGravity(Gravity.BOTTOM);
-
-//        registerForContextMenu(binding.importance);
-
-
         PopOutTaskViewModel popOutTaskViewModel = new ViewModelProvider(this).get(PopOutTaskViewModel.class);
         binding = DialogPopouttaskBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -252,7 +246,7 @@ public class PopOutTaskDialog extends DialogFragment {
             }
         });
 
-        MenuInflater menuInflater = new MenuInflater(getContext());
+        binding.timepicker.setIs24HourView(true);
 
         return root;
     }
@@ -299,16 +293,4 @@ public class PopOutTaskDialog extends DialogFragment {
         }
 
     }
-
-//
-//    @Override
-//    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
-//        MenuInflater inflater = getActivity().getMenuInflater();
-//        inflater.inflate(R.menu.importance_menu,menu);
-//    }
-//
-//    @Override
-//    public boolean onContextItemSelected(@NonNull MenuItem item) {
-//        return super.onContextItemSelected(item);
-//    }
 }
