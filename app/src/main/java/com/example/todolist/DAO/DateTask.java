@@ -10,6 +10,8 @@ public class DateTask implements Serializable{
 
     private Date date;
     private HashMap<String,Task> tasks;
+    private int allTaskNum = 0;
+    private int finishedTaskNum = 0;
 
     public DateTask(Date date){
         this.date = date;
@@ -24,12 +26,25 @@ public class DateTask implements Serializable{
             return false;
         }else{
             tasks.put(task.getID(),task);
+            this.allTaskNum+=1;
+            if(task.isTaskDown()){
+                this.finishedTaskNum+=1;
+            }
             return true;
         }
     }
 
     public boolean deleteTask(String id){
-        return tasks.remove(id)!=null?true:false;
+        Task removedTask = tasks.remove(id);
+        if(removedTask!=null){
+            this.allTaskNum -= 1;
+            if(removedTask.isTaskDown()){
+                this.finishedTaskNum-=1;
+            }
+            return true;
+        }else{
+            return false;
+        }
     }
 
 
@@ -57,4 +72,19 @@ public class DateTask implements Serializable{
         this.tasks = tasks;
     }
 
+    public int getAllTaskNum() {
+        return allTaskNum;
+    }
+
+    public void setAllTaskNum(int allTaskNum) {
+        this.allTaskNum = allTaskNum;
+    }
+
+    public int getFinishedTaskNum() {
+        return finishedTaskNum;
+    }
+
+    public void setFinishedTaskNum(int finishedTaskNum) {
+        this.finishedTaskNum = finishedTaskNum;
+    }
 }

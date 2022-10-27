@@ -47,9 +47,9 @@ public class TaskListItemView extends ConstraintLayout {
             timer.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(getContext(), "Should switch to timer", Toast.LENGTH_SHORT).show();
-                    //PopOutTaskDialog popOutTaskDialog = new PopOutTaskDialog(dateString,handler,task);
-                    //popOutTaskDialog.show(fragment.getParentFragmentManager(), "Task Editor Dialog");
+//                    Toast.makeText(getContext(), "Should switch to timer", Toast.LENGTH_SHORT).show();
+                    PopOutTaskDialog popOutTaskDialog = new PopOutTaskDialog(dateString,handler,task);
+                    popOutTaskDialog.show(fragment.getParentFragmentManager(), "Task Editor Dialog");
                 }
             });
             taskItem.setOnClickListener(new OnClickListener() {
@@ -64,7 +64,7 @@ public class TaskListItemView extends ConstraintLayout {
                 public void onClick(View v) {
                     NavController controller = Navigation.findNavController(fragment.getActivity(), R.id.nav_host_fragment_activity_main);
                     Bundle bundle = new Bundle();
-                    bundle.putString("taskID",task.getID());
+                    bundle.putString("taskInfo",task.getID()+"$"+task.getName());
                     controller.navigate(R.id.navigation_timer, bundle);
                 }
             });
