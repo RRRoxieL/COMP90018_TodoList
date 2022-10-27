@@ -82,7 +82,7 @@
                                 android:textSize="18sp" />
 
                             <TextView
-                                android:id="@+id/textView16"
+                                android:id="@+id/userName"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="20sp"
@@ -117,7 +117,7 @@
                                 android:textSize="18sp" />
 
                             <TextView
-                                android:id="@+id/textView18"
+                                android:id="@+id/gender"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="20sp"
@@ -151,7 +151,7 @@
                                 android:textSize="18sp" />
 
                             <TextView
-                                android:id="@+id/textView20"
+                                android:id="@+id/email"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="20sp"
@@ -185,7 +185,7 @@
                                 android:textSize="18sp" />
 
                             <TextView
-                                android:id="@+id/textView22"
+                                android:id="@+id/password"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="20sp"
@@ -209,6 +209,7 @@
                             android:layout_marginTop="20sp"
                             android:layout_marginBottom="20sp"
                             android:src="@android:drawable/ic_menu_edit"
+                            android:visibility="invisible"
                             tools:ignore="SpeakableTextPresentCheck" />
 
                         <Button
