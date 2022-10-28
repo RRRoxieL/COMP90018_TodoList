@@ -112,8 +112,8 @@ public class TaskListItemView extends ConstraintLayout {
                 @Override
                 public void onClick(View v) {
                     NavController controller = Navigation.findNavController(fragment.getActivity(), R.id.nav_host_fragment_activity_main);
-                    Bundle bundle = new Bundle();
-                    bundle.putString("taskInfo",task.getID()+"$"+task.getName());
+                    final Bundle bundle = new Bundle();
+                    bundle.putString("taskInfo","1111"+"$"+"name");
                     controller.navigate(R.id.navigation_timer, bundle);
                 }
             });
