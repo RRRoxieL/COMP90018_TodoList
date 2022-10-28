@@ -198,6 +198,7 @@ public class DateFragment extends Fragment {
      * bind datetask to the data on the database.
      * this function replaced readData()
      */
+
     private void bindDateTask(){
         databaseTable.child(dateString).addValueEventListener(new ValueEventListener() {
             /**
