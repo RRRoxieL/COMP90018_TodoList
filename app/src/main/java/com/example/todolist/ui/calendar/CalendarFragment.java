@@ -20,50 +20,51 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.todolist.R;
 import com.example.todolist.databinding.FragmentCalendarBinding;
+import com.example.todolist.tools.GlobalValues;
+import com.example.todolist.tools.TomToolkit;
+import com.google.rpc.context.AttributeContext;
 
 import java.text.SimpleDateFormat;
 
+/**
+ *  this class is the main fragment of the calendar panel.
+ *  this class is responsible for display and select dates from a calendar.
+ */
 public class CalendarFragment extends Fragment {
-
+    /**
+     * binding: view binder
+     */
     private FragmentCalendarBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         CalendarViewModel calendarViewModel =
                 new ViewModelProvider(this).get(CalendarViewModel.class);
-
         binding = FragmentCalendarBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-
         final TextView textView = binding.textCalendar;
+        CalendarView calendar = binding.Calender;
+
+        //set the date on the header.
         calendarViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
 
-        CalendarView calendar = binding.Calender;
+        //when a date is selected, create a new DateFragment enable users to manage the selected date.
         calendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
                 CharSequence date = ""+dayOfMonth+"-"+(month+1)+"-"+year;
                 Bundle bundle = new Bundle();
-                bundle.putCharSequence("time",date);
+                //save selected date into bundle and send to the new datefragment
+                bundle.putCharSequence(GlobalValues.BUNDLE_INFO_TIME,date);
                 DateFragment dateFragment = new DateFragment();
                 dateFragment.setArguments(bundle);
                 FragmentManager fm = getParentFragmentManager();
                 FragmentTransaction ft = fm.beginTransaction();
                 ft.replace(R.id.nav_host_fragment_activity_main,dateFragment);
                 ft.commit();
-                Toast.makeText(getContext(),"You selected :"+dayOfMonth+"/"+(month+1)+"/"+year,Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getContext(),"You selected :"+dayOfMonth+"/"+(month+1)+"/"+year,Toast.LENGTH_SHORT).show();
             }
         });
 
-//        calendarViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
-//        textView.setText("10-06-2022");
-//
-//        textView.setOnClickListener(new View.OnClickListener() {
-//            @RequiresApi(api = Build.VERSION_CODES.N)
-//            @Override
-//            public void onClick(View v) {
-
-//            }
-//        });
         return root;
     }
 

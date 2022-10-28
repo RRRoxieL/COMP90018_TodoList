@@ -1,5 +1,6 @@
 package com.example.todolist.ui.calendar;
 
+import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 
 import androidx.activity.result.ActivityResult;
@@ -54,6 +55,7 @@ import com.example.todolist.R;
 
 import com.example.todolist.databinding.DialogPopouttaskBinding;
 import com.example.todolist.databinding.FragmentDateBinding;
+import com.example.todolist.tools.GlobalValues;
 import com.example.todolist.tools.TomToolkit;
 import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -76,87 +78,150 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 
-
+/**
+ * this is a manager dialog for a specific task.
+ */
 public class PopOutTaskDialog extends DialogFragment {
 
     private DialogPopouttaskBinding binding;
     private String date;
     private Handler handler;
     private Task task;
-    private ActivityResultLauncher<Intent> intentActivityResultLauncher;
-    private ActivityResultLauncher<Intent> intentActivityResultLauncher1;
+    private ActivityResultLauncher<Intent> localActivityResultLauncher;
+    private ActivityResultLauncher<Intent> cameraActivityResultLauncher;
     private Uri imageUri;
+    private Object imgData;
 
+    /**
+     * constructor without a task
+     * used for adding new tasks.
+     * @param date: date of the task
+     * @param handler: a handler used for send message
+     */
     public PopOutTaskDialog(String date, Handler handler) {
         this.date = date;
         this.handler=handler;
 
     }
 
+    /**
+     * constructor with a task
+     * used for manage existed tasks.
+     * @param date: date of the task
+     * @param handler: a handler used for send message
+     * @param task: a task that is under management
+     */
     public PopOutTaskDialog(String date,Handler handler,Task task){
         this.date = date;
         this.handler = handler;
         this.task = task;
     }
 
+    /**
+     * rewrite the onCreate method to initialize resultLaunchers for local file fetch and pictures from cametra.
+     * @param savedInstanceState: infomation from the fragment manager, not used
+     */
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //registerForActivityResult has to be registered in oncreate function.
-        intentActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+
+        localActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
             @Override
             public void onActivityResult(ActivityResult result) {
                 Intent data = result.getData();
                 int resultCode = result.getResultCode();
                 if (resultCode == RESULT_OK && data != null) {
                     imageUri = data.getData();
-                    ImageView imageView = (ImageView)getView().findViewById(R.id.img);
-                    if(imageView==null || imageUri==null){
-                        Toast.makeText(getContext(), "please select a picture", Toast.LENGTH_SHORT).show();
-                    }else{
-                        String filename = createFileName();
-                        TomToolkit.savePicture(imageUri,filename,getContext());
-                        imageView.setImageURI(imageUri);
-                        if(task!=null){
-                            task.setPicPath(filename);
-                        }else{
-                            task = new Task(getActivity(),date,1,1,"name","desc",null,null);
-                            task.setPicPath(filename);
-                        }
-                    }
-
+                    imgData = imageUri;
+                    actionReceivePic(imageUri,imageUri);
+                }else if(resultCode == RESULT_CANCELED || data == null){
+                    imageUri = null;
+                    imgData = null;
+                    actionReceivePic(imgData,imageUri);
                 }
             }
         });
-        intentActivityResultLauncher1 = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        cameraActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
             @Override
             public void onActivityResult(ActivityResult result) {
                 Intent data = result.getData();
                 int resultCode = result.getResultCode();
                 if (resultCode == RESULT_OK && data != null) {
-                    Bitmap img = (Bitmap)data.getExtras().get("data");
-                    ImageView imageView = (ImageView)getView().findViewById(R.id.img);
+                    imgData = (Bitmap)data.getExtras().get("data");
                     imageUri = Uri.parse("default");
-                    if(imageView==null || imageUri==null){
-                        Toast.makeText(getContext(), "please select a picture", Toast.LENGTH_SHORT).show();
-                    }else{
-                        String filename = createFileName();
-                        TomToolkit.savePicture(img,filename,getContext());
-                        imageView.setImageBitmap(img);
-                        if(task!=null){
-                            task.setPicPath(filename);
-                        }else{
-                            task = new Task(getActivity(),date,1,1,"name","desc",null,null);
-                            task.setPicPath(filename);
-                        }
-                    }
-
+                    actionReceivePic(imgData,imageUri);
+                }else if(resultCode == RESULT_CANCELED || data == null){
+                    imageUri = null;
+                    imgData = null;
+                    actionReceivePic(imgData,imageUri);
                 }
             }
         });
 
     }
 
+    /**
+     *
+     * @param data: image data, can be Uri or Bitmap
+     * @param imageUri: the imageUri field, null stands for no data.
+     */
+    private void actionReceivePic(Object data,Uri imageUri){
+        //if the data collected is not null, save the image to database and set the imageview to the image
+        ImageView imageView = (ImageView)getView().findViewById(R.id.img);
+        if(imageView==null || imageUri==null){
+            Toast.makeText(getContext(), "please select a picture", Toast.LENGTH_SHORT).show();
+        }else{
+            if(task==null){
+                task = new Task(getActivity(),date,1,1,"name","desc",null,null);
+            }
+        }
+        setPicture(data,imageView);
+    }
+
+    /**
+     * save the picture to database if imageUri field is not null
+     * @param data: the picture data to be stored, can be Uri or Bitmap
+     */
+    private void savePicture(Object data){
+        if(imageUri!=null){
+            String filename = createFileName();
+            task.setPicPath(filename);
+            if(data instanceof Uri){
+                Uri dataUri = (Uri) data;
+                TomToolkit.savePicture(dataUri,filename,getContext());
+            }else if(data instanceof Bitmap){
+                Bitmap dataBitmap = (Bitmap) data;
+                TomToolkit.savePicture(dataBitmap,filename,getContext());
+            }
+        }
+    }
+
+    /**
+     * set the picture of a imageView, set default upload pic if data is null
+     * @param data: the picture data, can be Uri or Bitmap or null
+     * @param imageView: the imageview to be set
+     */
+    private void setPicture(Object data, ImageView imageView){
+        if(data instanceof Uri){
+            Uri dataUri = (Uri) data;
+            imageView.setImageURI(dataUri);
+        }else if(data instanceof Bitmap){
+            Bitmap dataBitmap = (Bitmap) data;
+            imageView.setImageBitmap(dataBitmap);
+        }else if(data == null){
+            imageView.setImageResource(R.drawable.ic_frag_import);
+        }
+    }
+
+
+    /**
+     * constructor of the view
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Nullable
     @Override
@@ -168,8 +233,9 @@ public class PopOutTaskDialog extends DialogFragment {
         binding = DialogPopouttaskBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         setContents();
+        binding.timepicker.setIs24HourView(true);
 
-
+        //simple end the popoutdialog when cancle button clicked
         binding.btnCancle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -177,40 +243,35 @@ public class PopOutTaskDialog extends DialogFragment {
             }
         });
 
+        //send the request of save the updated data to the DateFragment when save button clicked.
         binding.btnSave.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View v) {
+                savePicture(imgData);
                 setTask();
-                Message message = handler.obtainMessage();
-                Bundle bundle = new Bundle();
-                bundle.putChar("actionTag",'a');
-                bundle.putSerializable("task",task);
-                message.setData(bundle);
-                handler.sendMessage(message);
+                TomToolkit.sendMessage(handler,task,GlobalValues.BUNDLE_INFO_ACTIONTAG,GlobalValues.ACTIONTAG_ADD);
                 dismiss();
             }
         });
 
+        //send the request of delete the under manage task to the DateFragment when delete button clicked.
         binding.btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Message message = handler.obtainMessage();
-                Bundle bundle = new Bundle();
-                bundle.putChar("actionTag",'d');
-                if(task!=null){
-                    bundle.putString("ID",task.getID());
-                }
-                message.setData(bundle);
-                handler.sendMessage(message);
+                TomToolkit.sendMessage(handler,task, GlobalValues.BUNDLE_INFO_ACTIONTAG,GlobalValues.ACTIONTAG_DEL);
                 dismiss();
             }
         });
 
-        binding.img.setOnClickListener(new View.OnClickListener() {
+        /**
+         * when long click the picture, a menu would popup ask the user to
+         * select picture from the file or from camera.
+         */
+        binding.img.setOnLongClickListener(new View.OnLongClickListener() {
             @SuppressLint("UseCompatLoadingForDrawables")
             @Override
-            public void onClick(View v) {
+            public boolean onLongClick(View v) {
                 PopupMenu popupMenu = new PopupMenu(getContext(),binding.img);
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
@@ -221,13 +282,12 @@ public class PopOutTaskDialog extends DialogFragment {
                                 Intent galleryIntent = new Intent();
                                 galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
                                 galleryIntent.setType("image/*");
-                                intentActivityResultLauncher.launch(galleryIntent);
+                                localActivityResultLauncher.launch(galleryIntent);
                                 break;
                             case "FROM CAMERA":
                                 Intent galleryIntent1 = new Intent();
                                 galleryIntent1.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-//                                galleryIntent1.setType("image/*");
-                                intentActivityResultLauncher1.launch(galleryIntent1);
+                                cameraActivityResultLauncher.launch(galleryIntent1);
                                 break;
                         }
                         return false;
@@ -235,31 +295,28 @@ public class PopOutTaskDialog extends DialogFragment {
                 });
                 popupMenu.inflate(R.menu.popout_img_selector);
                 popupMenu.show();
-
+                return true;
             }
         });
-
-        binding.importance.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                return false;
-            }
-        });
-
-        binding.timepicker.setIs24HourView(true);
 
         return root;
     }
 
+    /**
+     * create a filename for the image, name came from imageUri
+     * @return a filename String
+     */
     private String createFileName(){
         if(date==null || imageUri==null){
             return null;
         }
-        return date.toString()+imageUri.getLastPathSegment()+".jpg";
+        return date+imageUri.getLastPathSegment()+".jpg";
     }
 
 
-
+    /**
+     * set the contents on the view as in the task
+     */
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void setContents(){
         if(task!=null){
@@ -278,6 +335,10 @@ public class PopOutTaskDialog extends DialogFragment {
         }
     }
 
+    /**
+     * set the task as user updated in the contents.
+     * except for task.picPath, which would be automatically set when savePicture() called
+     */
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void setTask(){
         if(task==null){

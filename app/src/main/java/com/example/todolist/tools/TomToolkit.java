@@ -11,6 +11,8 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -39,6 +41,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
@@ -53,11 +56,19 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * a toolkit that includes all neccessary functions for calendar and home fragment.
+ */
 public class TomToolkit {
     private static final DatabaseReference dateTaskTable = FirebaseDatabase.getInstance().getReference("DateTaskTable");
     private static final StorageReference fireStorage = FirebaseStorage.getInstance().getReference("Picture");
     private static Long ID;
+
     final static private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+
+    /**
+     * test the connection to firebase
+     */
     static {
         FirebaseDatabase.getInstance().getReference("GlobalTaskID").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
@@ -77,6 +88,32 @@ public class TomToolkit {
         }
     }
 
+    /**
+     * send a message through handler
+     * @param handler: the handler that used for sending messge
+     * @param task: the task that fills the data
+     * @param actiontag: a global value for the key for actionTag in the message
+     * @param action: the type of actions
+     */
+    public static void sendMessage(Handler handler, com.example.todolist.DAO.Task task, String actiontag, char action){
+        Message message = handler.obtainMessage();
+        Bundle bundle = new Bundle();
+        bundle.putChar(actiontag,action);
+        if(action!=GlobalValues.ACTIONTAG_DEL){
+            bundle.putSerializable(GlobalValues.BUNDLE_INFO_TASK,task);
+        }else{
+            bundle.putString(GlobalValues.BUNDLE_INFO_TASKID,task.getID());
+        }
+        message.setData(bundle);
+        handler.sendMessage(message);
+    }
+
+    /**
+     * read global task id from firebase
+     * @deprecated
+     * @param activity
+     * @return
+     */
     public static Long readID(Activity activity){
         SharedPreferences sharedPreferences = activity.getSharedPreferences("ID", Context.MODE_PRIVATE);
         Long data = new Long(0);
@@ -91,6 +128,13 @@ public class TomToolkit {
         }
     }
 
+    /**
+     * fetch picture from firebase, and show it in the imageview
+     * default fetch path: Picture/image/filename
+     * @param filename: the name of the ficture to be fetched
+     * @param context: the context where the error messge shown
+     * @param imageView: the place fetched picture to be shown
+     */
     public static void getPicture(String filename,Context context,ImageView imageView){
         StorageReference fileRef = fireStorage.child("image/" + filename);
         File tempimg = null;
@@ -103,11 +147,20 @@ public class TomToolkit {
                     public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                         Bitmap bitmap = BitmapFactory.decodeFile(finalTempimg.getAbsolutePath());
                         imageView.setImageBitmap(bitmap);
+                        imageView.setClickable(true);
+                        imageView.setLongClickable(true);
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Toast.makeText(context,"picture not found",Toast.LENGTH_LONG);
+                    }
+                }).addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(@NonNull FileDownloadTask.TaskSnapshot snapshot) {
+                        imageView.setImageResource(R.drawable.ic_frag_importance);
+                        imageView.setClickable(false);
+                        imageView.setLongClickable(false);
                     }
                 });
             } catch (IOException e) {
@@ -118,10 +171,22 @@ public class TomToolkit {
         }
     }
 
+    /**
+     * get the referenced file from the database
+     * @deprecated
+     * @param filename: the filename to be get
+     * @return: file reference
+     */
     public static StorageReference getImgRef(String filename){
         return fireStorage.child("image/" + filename);
     }
 
+    /**
+     * save picture to fire base
+     * @param imageUri: the picture Uri
+     * @param filename: the name of the picture on the firebase
+     * @param context: the context where error message shown
+     */
     public static void savePicture(Uri imageUri,String filename,Context context){
         fireStorage.child("image/"+filename).putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
@@ -136,7 +201,12 @@ public class TomToolkit {
             }
         });
     }
-
+    /**
+     * save picture to fire base
+     * @param bitmap: the picture in bitmap
+     * @param filename: the name of the picture on the firebase
+     * @param context: the context where error message shown
+     */
     public static void savePicture(Bitmap bitmap,String filename,Context context){
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG,100,baos);
@@ -163,17 +233,33 @@ public class TomToolkit {
         });
     }
 
+    /**
+     * save a dateTask to firebase
+     * @param date: the date of the dateTask
+     * @param dateTask the dateTask to be stored
+     */
     public static void saveToFireBase(String date,DateTask dateTask){
         dateTaskTable.child(date).setValue(new Gson().toJson(dateTask));
     }
 
+    /**
+     * get the dateTaskTable refrerence
+     * @return static field DatabaseReference dateTaskTable
+     */
     public static DatabaseReference getDatabaseTable(){
         return dateTaskTable;
     }
 
+    /**
+     * get date from a date String
+     * @param dateString: a String that to be convert to date
+     * @return: a date that equal to that in the date string.
+     * @throws ParseException: when date string is not valid
+     */
     public static Date getDate(String dateString) throws ParseException {
         return dateFormat.parse(dateString);
     }
+
 //    public static getTool(){
 //        CharSequence date = ""+dayOfMonth+"-"+(month+1)+"-"+year;
 //        Bundle bundle = new Bundle();

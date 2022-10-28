@@ -33,6 +33,7 @@ import com.example.todolist.DAO.Task;
 import com.example.todolist.R;
 import com.example.todolist.databinding.FragmentCalendarBinding;
 import com.example.todolist.databinding.FragmentDateBinding;
+import com.example.todolist.tools.GlobalValues;
 import com.example.todolist.tools.TomToolkit;
 import com.example.todolist.ui.calendar.CalendarViewModel;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -49,27 +50,23 @@ import java.time.DateTimeException;
 import java.util.Date;
 import java.util.Map;
 
-
+/**
+ * DateFragment is responsible for the management panel of the data for the same date.
+ */
 public class DateFragment extends Fragment {
     private FragmentDateBinding binding;
     private DateTask dateTask;
     private String dateString;
     private Handler handler;
     private DatabaseReference databaseTable = TomToolkit.getDatabaseTable();
+
     @RequiresApi(api = Build.VERSION_CODES.N)
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         //initialize the attributes except dateTask
         initialize(inflater,container,savedInstanceState);
         updateView();
 
-        binding.btnAddwork.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PopOutTaskDialog popOutTaskDialog = new PopOutTaskDialog(dateString,handler);
-                popOutTaskDialog.show(getParentFragmentManager(),"Task Editor Dialog");
-            }
-        });
-
+        //logic for add button, add a new PopOutTaskDialog to manage one task.
         binding.btnAddwork.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -81,7 +78,7 @@ public class DateFragment extends Fragment {
         binding.btnPredate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                TomToolkit.saveToFireBase(dateString,dateTask);
+
                 Task task = new Task(getActivity(),dateString,0,0,"name","default",null,null);
             }
         });
@@ -116,9 +113,14 @@ public class DateFragment extends Fragment {
         binding = null;
     }
 
+    /**
+     * refresh the view on the page, according to data stored in dataTask.
+     */
     private void updateView(){
         if(dateTask!=null && dateTask.getTasks()!=null){
+            //remove old views
             binding.workLayout.removeAllViews();
+            //add new views
             for (Map.Entry<String,Task> entry: dateTask.getTasks().entrySet()) {
                 TaskListItemView taskListItemView = new TaskListItemView(getContext(),entry.getValue(),dateString,handler,this);
                 binding.workLayout.addView(taskListItemView);
@@ -126,62 +128,88 @@ public class DateFragment extends Fragment {
         }
     }
 
+    /**
+     * initialization of the datefragment
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     */
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void initialize(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         DateViewModel dateViewModel = new ViewModelProvider(this).get(DateViewModel.class);
         binding = FragmentDateBinding.inflate(inflater, container, false);
-
+        //initialize current date managed and save it to field dateString
         Bundle bundle = getArguments();
-        CharSequence date = bundle.getCharSequence("time");
-        dateString = date.toString();
+        CharSequence date = bundle.getCharSequence(GlobalValues.BUNDLE_INFO_TIME);
+        this.dateString = date.toString();
 
+        //because read data from the database takes some time, initialize an empty datatask to avoid crash
+        //this datetask would be replaced by data fetched from database successfully.
         try {
-            dateTask = new DateTask(TomToolkit.getDate(dateString));
+            this.dateTask = new DateTask(TomToolkit.getDate(dateString));
         } catch (ParseException e) {
             e.printStackTrace();
             System.exit(1);
         }
 
+        //bind datetask to the data in the database and start data fetch
         bindDateTask();
 
-
+        //start a handler that would be passed to other fragments for communication
+        //the message send back should have a actionTag and a task or only taskID
         handler=new Handler(Looper.getMainLooper()){
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void handleMessage(@NonNull Message msg) {
                 super.handleMessage(msg);
                 Bundle data = msg.getData();
-                char actionTag = data.getChar("actionTag");
-                if(actionTag=='a'){
-                    Task task = (Task)data.getSerializable("task");
-                    Toast.makeText(getContext(),"handler report task: "+task.toString(),Toast.LENGTH_LONG).show();
+                char actionTag = data.getChar(GlobalValues.BUNDLE_INFO_ACTIONTAG);
+                if(actionTag==GlobalValues.ACTIONTAG_ADD){
+                    //the returned data called for add new task to the date, add the new task returned
+                    Task task = (Task)data.getSerializable(GlobalValues.BUNDLE_INFO_TASK);
                     dateTask.addTask(task);
-                }else if(actionTag=='d'){
-                    Toast.makeText(getContext(),Boolean.toString(dateTask.deleteTask(data.getString("ID"))), Toast.LENGTH_SHORT).show();
-                }else if(actionTag=='u'){
-                    Task task = (Task)data.getSerializable("task");
-                    Toast.makeText(getContext(),"handler report task: "+task.toString(),Toast.LENGTH_LONG).show();
+                }else if(actionTag==GlobalValues.ACTIONTAG_DEL){
+                    //the returned data called for delete a task from the date, make a toast to hint the user.
+                    Toast.makeText(getContext(),Boolean.toString(dateTask.deleteTask(data.getString(GlobalValues.BUNDLE_INFO_TASKID))), Toast.LENGTH_SHORT).show();
+                }else if(actionTag==GlobalValues.ACTIONTAG_UPD){
+                    //the returned data called for delete a task from the date, update the task in the datetask
+                    Task task = (Task)data.getSerializable(GlobalValues.BUNDLE_INFO_TASK);
                     dateTask.downTask(task);
                 }
 
+                //after the datetask was updated, save the new datetask to database and update the view on this page.
                 saveData();
                 updateView();
             }
         };
-
-        getActivity().setTitle(date);
+//        getActivity().setTitle(date);
     }
 
+    /**
+     * API reserved for save data to database
+     */
     private void saveData(){
         TomToolkit.saveToFireBase(dateString,dateTask);
     }
 
-    private void readData(){
-
+    /**
+     * API reserved for read data from database
+     * not used
+     */
+    private DateTask readData(){
+        return null;
     }
 
+    /**
+     * bind datetask to the data on the database.
+     * this function replaced readData()
+     */
     private void bindDateTask(){
         databaseTable.child(dateString).addValueEventListener(new ValueEventListener() {
+            /**
+             * when the data in database changed, read the data into dateTask and update view
+             * @param snapshot
+             */
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Object value = snapshot.getValue();
@@ -189,7 +217,6 @@ public class DateFragment extends Fragment {
                     dateTask = new Gson().fromJson(value.toString(), DateTask.class);
                     if(dateTask==null || dateTask.getTasks()==null){
                         Toast.makeText(getContext(), "read data == null", Toast.LENGTH_SHORT).show();
-//                        saveData();
                     }
                     updateView();
                 }
