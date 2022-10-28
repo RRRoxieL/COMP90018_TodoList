@@ -35,7 +35,8 @@
             android:textStyle="bold"
             android:text="Title info"
             android:background="@color/teal_200"
-            android:paddingHorizontal="20dp"/>
+            android:paddingHorizontal="20dp"
+            android:paddingBottom="10dp"/>
 
         <CalendarView
             android:id="@+id/HomeCalender"

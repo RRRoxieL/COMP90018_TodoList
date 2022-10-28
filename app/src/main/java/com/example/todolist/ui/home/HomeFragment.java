@@ -41,6 +41,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -198,11 +199,7 @@ public class HomeFragment extends Fragment {
 
 
         dateText.setText("Date: "+currentDate);
-
-//        dutyFinished = dateTask.getFinishedTaskNum();
-//        dutyAmount = dateTask.getAllTaskNum();
-//        dutyText.setText(dutyFinished+"/"+dutyAmount);
-        //dutyText.setText(getDutyInfo());
+        setDutyText();
         return root;
     }
 
@@ -215,7 +212,7 @@ public class HomeFragment extends Fragment {
                     binding.eventLayout.addView(taskListItemView);
                 }
             }
-
+            setDutyText();
         }
     }
 
@@ -354,6 +351,14 @@ public class HomeFragment extends Fragment {
 //    }
 
     private void setDutyText(){
+//        int finished = 0;
+//        HashMap<String,Task> tasks = dateTask.getTasks();
+//        for (String key : tasks.keySet()){
+//            if (tasks.get(key).isTaskDown()){
+//                finished++;
+//            }
+//        }
+//        dutyFinished = finished;
         dutyText.setText(getDutyInfo());
     }
 
@@ -361,7 +366,7 @@ public class HomeFragment extends Fragment {
         dutyFinished = dateTask.getFinishedTaskNum();
         dutyAmount = dateTask.getAllTaskNum();
         return dutyFinished==dutyAmount?
-                "All Finished, congratulation!":"Finished Duties: "+dutyFinished+"/"+dutyAmount;
+                "All Finished, cheers!":"Finished Duties: "+dutyFinished+"/"+dutyAmount;
     }
 
     private void bindDateTask(){
