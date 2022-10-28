@@ -6,27 +6,42 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
 
     tools:context=".ui.calendar.DateFragment">
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:id="@+id/task_scroll"
-        >
-
-        <LinearLayout
-            android:id="@+id/work_layout"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/dateText"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="70dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:textSize="30dp"
+            android:textStyle="bold"
+            android:text="Title part"
+            android:textColor="@color/white"
+            android:background="@color/teal_200"
+            />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/task_scroll"
+            >
+            <LinearLayout
+                android:id="@+id/work_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="70dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:orientation="vertical">
 
 
 
-        </LinearLayout>
-    </ScrollView>
+            </LinearLayout>
+        </ScrollView>
+
+    </LinearLayout>
+
 
 <!--    <ImageButton-->
 <!--        android:id="@+id/btn_addwork"-->

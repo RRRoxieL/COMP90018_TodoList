@@ -52,7 +52,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Map;
 import java.util.Set;
 
@@ -271,6 +273,32 @@ public class TomToolkit {
 //        ft.replace(R.id.nav_host_fragment_activity_main,dateFragment);
 //        ft.commit();
 //    }
+
+    // 获取当前时间
+    public static Date dateCalculator(Date date, int days){
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(date);
+        // 把日期往后增加一天,整数  往后推,负数往前移动
+        calendar.add(Calendar.DATE, days);
+        // 这个时间就是日期往后推一天的结果
+        return calendar.getTime();
+    }
+
+    public static String toDateString(Date date){
+        return dateFormat.format(date);
+    }
+
+    public static void startDataFragment(FragmentManager fm, String dateString){
+        Bundle bundle = new Bundle();
+        //save selected date into bundle and send to the new datefragment
+        bundle.putCharSequence(GlobalValues.BUNDLE_INFO_TIME,dateString);
+        DateFragment dateFragment = new DateFragment();
+        dateFragment.setArguments(bundle);
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.replace(R.id.nav_host_fragment_activity_main,dateFragment);
+        ft.commit();
+    }
+
 
 
 

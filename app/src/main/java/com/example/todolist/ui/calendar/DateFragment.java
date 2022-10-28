@@ -26,6 +26,8 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.todolist.DAO.DateTask;
@@ -78,29 +80,18 @@ public class DateFragment extends Fragment {
         binding.btnPredate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Task task = new Task(getActivity(),dateString,0,0,"name","default",null,null);
+                Date date = TomToolkit.dateCalculator(dateTask.getDate(), -1);
+                String preDateString = TomToolkit.toDateString(date);
+                TomToolkit.startDataFragment(getParentFragmentManager(),preDateString);
             }
         });
 
         binding.btnPstdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatabaseReference databaseTable = TomToolkit.getDatabaseTable();
-                databaseTable.child(dateString).addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        Object value = snapshot.getValue();
-                        dateTask = new Gson().fromJson(value.toString(), DateTask.class);
-                        Toast.makeText(getContext(),"prebtn:"+dateTask.toString(),Toast.LENGTH_LONG).show();
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        Log.w(TAG, "loadPost:onCancelled", error.toException());
-                    }
-                });
-
+                Date date = TomToolkit.dateCalculator(dateTask.getDate(), 1);
+                String preDateString = TomToolkit.toDateString(date);
+                TomToolkit.startDataFragment(getParentFragmentManager(),preDateString);
             }
         });
 
@@ -122,6 +113,7 @@ public class DateFragment extends Fragment {
             binding.workLayout.removeAllViews();
             //add new views
             for (Map.Entry<String,Task> entry: dateTask.getTasks().entrySet()) {
+
                 TaskListItemView taskListItemView = new TaskListItemView(getContext(),entry.getValue(),dateString,handler,this);
                 binding.workLayout.addView(taskListItemView);
             }
@@ -140,8 +132,9 @@ public class DateFragment extends Fragment {
         binding = FragmentDateBinding.inflate(inflater, container, false);
         //initialize current date managed and save it to field dateString
         Bundle bundle = getArguments();
-        CharSequence date = bundle.getCharSequence(GlobalValues.BUNDLE_INFO_TIME);
-        this.dateString = date.toString();
+        String date = bundle.getString(GlobalValues.BUNDLE_INFO_TIME);
+        this.dateString = date;
+        binding.dateText.setText(dateString);
 
         //because read data from the database takes some time, initialize an empty datatask to avoid crash
         //this datetask would be replaced by data fetched from database successfully.

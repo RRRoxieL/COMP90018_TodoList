@@ -51,16 +51,17 @@ public class CalendarFragment extends Fragment {
         calendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
-                CharSequence date = ""+dayOfMonth+"-"+(month+1)+"-"+year;
-                Bundle bundle = new Bundle();
-                //save selected date into bundle and send to the new datefragment
-                bundle.putCharSequence(GlobalValues.BUNDLE_INFO_TIME,date);
-                DateFragment dateFragment = new DateFragment();
-                dateFragment.setArguments(bundle);
-                FragmentManager fm = getParentFragmentManager();
-                FragmentTransaction ft = fm.beginTransaction();
-                ft.replace(R.id.nav_host_fragment_activity_main,dateFragment);
-                ft.commit();
+                String date = ""+dayOfMonth+"-"+(month+1)+"-"+year;
+                TomToolkit.startDataFragment(getParentFragmentManager(),date);
+//                Bundle bundle = new Bundle();
+//                //save selected date into bundle and send to the new datefragment
+//                bundle.putString(GlobalValues.BUNDLE_INFO_TIME,date);
+//                DateFragment dateFragment = new DateFragment();
+//                dateFragment.setArguments(bundle);
+//                FragmentManager fm = getParentFragmentManager();
+//                FragmentTransaction ft = fm.beginTransaction();
+//                ft.replace(R.id.nav_host_fragment_activity_main,dateFragment);
+//                ft.commit();
 //                Toast.makeText(getContext(),"You selected :"+dayOfMonth+"/"+(month+1)+"/"+year,Toast.LENGTH_SHORT).show();
             }
         });
