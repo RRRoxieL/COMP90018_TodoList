@@ -124,7 +124,7 @@ public class TaskListItemView extends ConstraintLayout {
             //dutyFinished++;
         } else {
             // 没选中（未完成），背景为蓝色
-            taskItem.setBackgroundColor(Color.parseColor("#00ffff"));
+            taskItem.setBackgroundColor(Color.parseColor("#ffffdd"));
             title.setTextColor(Color.parseColor("#636363"));
             desc.setTextColor(Color.parseColor("#636363"));
             // 清除删除线
