@@ -23,4 +23,6 @@
     <string name="set">Set</string>
     <string name="cancel">Cancel</string>
     <string name="bundle_info_time">time</string>
+    <string name="event_workload">Event Workload: 0\nCompare to the day before yesterday</string>
+    <string name="focus_time">Focus Time: 0h\nCompare to the day before yesterday</string>
 </resources>
