@@ -44,6 +44,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.Serializable;
 import java.text.ParseException;
@@ -207,7 +208,8 @@ public class DateFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Object value = snapshot.getValue();
                 if(value!=null){
-                    dateTask = new Gson().fromJson(value.toString(), DateTask.class);
+                    Gson gson = new GsonBuilder().setDateFormat("MMM dd, yyyy HH:mm:ss").create();
+                    dateTask = gson.fromJson(value.toString(), DateTask.class);
                     if(dateTask==null || dateTask.getTasks()==null){
                         Toast.makeText(getContext(), "read data == null", Toast.LENGTH_SHORT).show();
                     }
