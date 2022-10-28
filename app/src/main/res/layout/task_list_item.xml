@@ -11,7 +11,7 @@
         android:orientation="horizontal"
         android:paddingVertical="5dp"
         android:id="@+id/taskitem"
-        android:background="#00ffff">
+        android:background="@color/white">
         <CheckBox
             android:id="@+id/isfinished"
             android:layout_width="0dp"
@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:text="New Task"
                 android:textSize="20sp"
-                android:textColor="#636363"
+                android:textColor="#666666"
                 android:textStyle="bold"
                 android:maxLines="1"
                 android:ellipsize="end" />
@@ -43,7 +43,7 @@
                 android:text="Task Description"
                 android:maxLines="2"
                 android:textSize="15sp"
-                android:textColor="#636363"
+                android:textColor="#666666"
                 android:ellipsize="end" />
         </LinearLayout>
 

@@ -114,9 +114,9 @@ public class TaskListItemView extends ConstraintLayout {
     private void viewCheckChange(){
         if (isFinished.isChecked()){
             // 选中（已完成），背景为灰色
-            taskItem.setBackgroundColor(Color.parseColor("#cccccc"));
-            title.setTextColor(Color.parseColor("#999999"));
-            desc.setTextColor(Color.parseColor("#999999"));
+            taskItem.setBackgroundColor(Color.parseColor("#e6fcf9"));
+            title.setTextColor(Color.parseColor("#b2b2b2"));
+            desc.setTextColor(Color.parseColor("#b2b2b2"));
             // 添加删除线
             title.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);  //中划线，会有锯齿
             title.getPaint().setAntiAlias(true);
@@ -124,9 +124,9 @@ public class TaskListItemView extends ConstraintLayout {
             //dutyFinished++;
         } else {
             // 没选中（未完成），背景为蓝色
-            taskItem.setBackgroundColor(Color.parseColor("#ffffdd"));
-            title.setTextColor(Color.parseColor("#636363"));
-            desc.setTextColor(Color.parseColor("#636363"));
+            taskItem.setBackgroundColor(Color.parseColor("#ffffff"));
+            title.setTextColor(Color.parseColor("#666666"));
+            desc.setTextColor(Color.parseColor("#666666"));
             // 清除删除线
             title.getPaint().setFlags(0);
             title.invalidate();
