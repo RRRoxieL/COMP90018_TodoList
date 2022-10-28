@@ -27,6 +27,7 @@
             android:layout_gravity="center"
             android:textSize="20dp"
             android:textStyle="bold"
+            android:textColor="@color/black"
             android:text="Setting Your Task"
             android:layout_marginHorizontal="10dp"/>
 
@@ -63,6 +64,7 @@
                     android:layout_weight="10"
                     android:layout_height="wrap_content"
                     android:text="New Task"
+                    android:textColor="#b2b2b2"
                     android:textAlignment="center"
                     android:maxWidth="200dp"
                     android:layout_marginLeft="5dp"
@@ -88,6 +90,7 @@
                     android:scrollbars="vertical"
                     android:maxLines="5"
                     android:hint="Describe Your Task Here"
+                    android:textColor="#b2b2b2"
                     android:textAlignment="center"
                     android:maxWidth="200dp"
                     android:layout_marginLeft="5dp"
@@ -159,7 +162,8 @@
                     android:src="@drawable/ic_frag_import"
                     android:layout_gravity="top|center_horizontal"
                     android:layout_marginLeft="5dp"
-                    android:layout_marginRight="15dp"/>
+                    android:layout_marginRight="15dp"
+                    android:background="#f5f5f5"/>
 
 
             </LinearLayout>
@@ -179,8 +183,11 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="Delete"
+            android:textColor="#01e1c6"
             android:textAllCaps="false"
-            android:layout_marginHorizontal="10dp"/>
+            android:layout_marginHorizontal="10dp"
+            android:background="#e5fcf9"
+            android:layout_margin="10dp"/>
 
         <Button
             android:id="@+id/btn_save"
@@ -189,7 +196,11 @@
             android:layout_height="wrap_content"
             android:text="Save"
             android:textAllCaps="false"
-            android:layout_marginHorizontal="10dp"/>
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:layout_marginHorizontal="10dp"
+            android:background="#01e1c6"
+            android:layout_margin="10dp"/>
     </LinearLayout>
 
 
