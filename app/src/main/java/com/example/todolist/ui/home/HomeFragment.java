@@ -196,11 +196,13 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        dutyFinished = dateTask.getFinishedTaskNum();
-        dutyAmount = dateTask.getAllTaskNum();
 
         dateText.setText("Date: "+currentDate);
-        dutyText.setText(getDutyInfo());
+
+//        dutyFinished = dateTask.getFinishedTaskNum();
+//        dutyAmount = dateTask.getAllTaskNum();
+//        dutyText.setText(dutyFinished+"/"+dutyAmount);
+        //dutyText.setText(getDutyInfo());
         return root;
     }
 
@@ -228,7 +230,8 @@ public class HomeFragment extends Fragment {
         binding = null;
     }
 
-    public void addView(View view) {
+    // 未启用
+//    public void addView(View view) {
 //        TextView child = new TextView(getContext());
 //        child.setTextSize(20);
 //        // 获取当前的时间并转换为时间戳格式,
@@ -237,123 +240,126 @@ public class HomeFragment extends Fragment {
 //        child.setText(currentTime);
 //        // 调用一个参数的addView方法
 //        layout.addView(child);
-        i++;
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        layout.addView(createEventView(),lp);
-        dutyAmount++;
-        setDutyText();
+//        i++;
+//        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+//                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//        layout.addView(createEventView(),lp);
+//        dutyAmount++;
+//        setDutyText();
+//
+//        // 添加分割线
+//        TextView splitLine = new TextView(getContext());
+//        splitLine.setWidth(layout.getWidth());
+//        splitLine.setHeight(1);
+//        splitLine.setBackgroundColor(Color.parseColor("#666666"));
+//        layout.addView(splitLine);
+//    }
 
-        // 添加分割线
-        TextView splitLine = new TextView(getContext());
-        splitLine.setWidth(layout.getWidth());
-        splitLine.setHeight(1);
-        splitLine.setBackgroundColor(Color.parseColor("#666666"));
-        layout.addView(splitLine);
-    }
-
-    private LinearLayout createEventView(){
-        LinearLayout.LayoutParams lp;
-
-        // 信息中的标题
-        TextView title = new TextView(getContext());
-
-        // 事件主体
-        LinearLayout event =  new LinearLayout(getContext());
-        event.setOrientation(LinearLayout.HORIZONTAL);
-        event.setBackgroundColor(Color.parseColor("#00ffff"));
-
-        // 复选框
-        CheckBox checkBox = new CheckBox(getContext());
-        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked){
-                    // 选中（已完成），背景为灰色
-                    event.setBackgroundColor(Color.parseColor("#cccccc"));
-                    title.setTextColor(Color.parseColor("#999999"));
-                    // 添加删除线
-                    title.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);  //中划线，会有锯齿
-                    title.getPaint().setAntiAlias(true);
-
-                    dutyFinished++;
-                } else {
-                    // 没选中（未完成），背景为蓝色
-                    event.setBackgroundColor(Color.parseColor("#00ffff"));
-                    title.setTextColor(Color.parseColor("#000000"));
-                    // 清除删除线
-                    title.getPaint().setFlags(0);
-                    title.invalidate();
-
-                    dutyFinished--;
-                }
-                // 重新设置字体加粗
-                title.getPaint().setFakeBoldText(true);
-
-                setDutyText();
-            }
-        });
-        lp = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT);
-        lp.weight=1;
-        lp.leftMargin = 20;
-        event.addView(checkBox,lp);
-
-        // 事件信息layout
-        LinearLayout info = new LinearLayout(getContext());
-        info.setOrientation(LinearLayout.VERTICAL);
-
-        // 事件标题
-        title.setText("title"+i);
-        title.setTextColor(Color.parseColor("#000000"));
-        title.getPaint().setFakeBoldText(true);
-
-        lp = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        lp.topMargin=20;
-        info.addView(title,lp);
-
-        // 事件简介
-        TextView msg = new TextView(getContext());
-        msg.setText("This is msg");
-        lp = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        lp.topMargin = 10;
-        lp.bottomMargin=20;
-        info.addView(msg,lp);
-
-        lp = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
-        lp.weight=6;
-        event.addView(info,lp);
-        event.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getContext(),"clicked "+title.getText(), Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        ImageView timer =  new ImageView(getContext());
-        timer.setImageResource(R.drawable.ic_timer);
-        lp = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
-        lp.gravity= Gravity.CENTER;
-        lp.rightMargin=20;
-        lp.weight=1;
-
-        timer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getContext(), "You cliked timer icon", Toast.LENGTH_SHORT).show();
-            }
-        });
-        event.addView(timer,lp);
-
-        return event;
-    }
+    // 未启用
+//    private LinearLayout createEventView(){
+//        LinearLayout.LayoutParams lp;
+//
+//        // 信息中的标题
+//        TextView title = new TextView(getContext());
+//
+//        // 事件主体
+//        LinearLayout event =  new LinearLayout(getContext());
+//        event.setOrientation(LinearLayout.HORIZONTAL);
+//        event.setBackgroundColor(Color.parseColor("#00ffff"));
+//
+//        // 复选框
+//        CheckBox checkBox = new CheckBox(getContext());
+//        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                if (isChecked){
+//                    // 选中（已完成），背景为灰色
+//                    event.setBackgroundColor(Color.parseColor("#cccccc"));
+//                    title.setTextColor(Color.parseColor("#999999"));
+//                    // 添加删除线
+//                    title.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);  //中划线，会有锯齿
+//                    title.getPaint().setAntiAlias(true);
+//
+//                    dutyFinished++;
+//                } else {
+//                    // 没选中（未完成），背景为蓝色
+//                    event.setBackgroundColor(Color.parseColor("#00ffff"));
+//                    title.setTextColor(Color.parseColor("#000000"));
+//                    // 清除删除线
+//                    title.getPaint().setFlags(0);
+//                    title.invalidate();
+//
+//                    dutyFinished--;
+//                }
+//                // 重新设置字体加粗
+//                title.getPaint().setFakeBoldText(true);
+//
+//                setDutyText();
+//            }
+//        });
+//        lp = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT);
+//        lp.weight=1;
+//        lp.leftMargin = 20;
+//        event.addView(checkBox,lp);
+//
+//        // 事件信息layout
+//        LinearLayout info = new LinearLayout(getContext());
+//        info.setOrientation(LinearLayout.VERTICAL);
+//
+//        // 事件标题
+//        title.setText("title"+i);
+//        title.setTextColor(Color.parseColor("#000000"));
+//        title.getPaint().setFakeBoldText(true);
+//
+//        lp = new LinearLayout.LayoutParams(
+//                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//        lp.topMargin=20;
+//        info.addView(title,lp);
+//
+//        // 事件简介
+//        TextView msg = new TextView(getContext());
+//        msg.setText("This is msg");
+//        lp = new LinearLayout.LayoutParams(
+//                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//        lp.topMargin = 10;
+//        lp.bottomMargin=20;
+//        info.addView(msg,lp);
+//
+//        lp = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
+//        lp.weight=6;
+//        event.addView(info,lp);
+//        event.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Toast.makeText(getContext(),"clicked "+title.getText(), Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//
+//        ImageView timer =  new ImageView(getContext());
+//        timer.setImageResource(R.drawable.ic_timer);
+//        lp = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
+//        lp.gravity= Gravity.CENTER;
+//        lp.rightMargin=20;
+//        lp.weight=1;
+//
+//        timer.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Toast.makeText(getContext(), "You cliked timer icon", Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//        event.addView(timer,lp);
+//
+//        return event;
+//    }
 
     private void setDutyText(){
         dutyText.setText(getDutyInfo());
     }
 
     private String getDutyInfo(){
+        dutyFinished = dateTask.getFinishedTaskNum();
+        dutyAmount = dateTask.getAllTaskNum();
         return dutyFinished==dutyAmount?
                 "All Finished, congratulation!":"Finished Duties: "+dutyFinished+"/"+dutyAmount;
     }
