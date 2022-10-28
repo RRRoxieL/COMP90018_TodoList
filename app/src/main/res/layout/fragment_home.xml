@@ -11,7 +11,7 @@
         android:id="@+id/titleLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/teal_200"
+        android:background="@color/white"
         android:orientation="vertical">
 
         <TextView
@@ -20,7 +20,8 @@
             android:layout_height="wrap_content"
             android:textSize="30dp"
             android:textStyle="bold"
-            android:text="Title part" />
+            android:text="Title part"
+            android:background="@color/teal_200"/>
 
         <TextView
             android:id="@+id/dutyText"
@@ -28,19 +29,23 @@
             android:layout_height="wrap_content"
             android:textSize="25dp"
             android:textStyle="bold"
-            android:text="Title info" />
+            android:text="Title info"
+            android:background="@color/teal_200"/>
 
         <CalendarView
             android:id="@+id/HomeCalender"
             android:layout_width="match_parent"
-            android:layout_height="0dp" />
+            android:layout_height="0dp"
+            android:layout_gravity="center_horizontal"/>
 
         <LinearLayout
             android:id="@+id/pulldown"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@color/teal_200">
 
             <ImageView
                 android:layout_width="30dp"
@@ -50,6 +55,12 @@
 
 
     </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/teal_200"
+        android:layout_below="@+id/titleLayout"/>
 
     <ScrollView
         android:id="@+id/scrollView"
