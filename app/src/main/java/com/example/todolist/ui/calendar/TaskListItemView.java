@@ -108,12 +108,15 @@ public class TaskListItemView extends ConstraintLayout {
                     popOutTaskDialog.show(fragment.getParentFragmentManager(), "Task Editor Dialog");
                 }
             });
+
+
             binding.btnTimer.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     NavController controller = Navigation.findNavController(fragment.getActivity(), R.id.nav_host_fragment_activity_main);
                     final Bundle bundle = new Bundle();
-                    bundle.putString("taskInfo","1111"+"$"+"name");
+                    bundle.putString("taskName", task.getName());
+                    bundle.putString("taskID", task.getID());
                     controller.navigate(R.id.navigation_timer, bundle);
                 }
             });

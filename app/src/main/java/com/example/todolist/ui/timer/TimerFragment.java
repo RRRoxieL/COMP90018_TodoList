@@ -37,13 +37,11 @@ public class TimerFragment extends Fragment implements ServiceCallBack {
         binding.setLifecycleOwner(getActivity());
 
         try {
-            String taskInfo = getArguments().getString("taskInfo");
-            String[] taskInfos = taskInfo.split("$");
-            this.taskID = taskInfos[0];
-            this.taskName = taskInfos[1];
+            this.taskName = getArguments().getString("taskName");
+            this.taskID = getArguments().getString("taskID");
 
             if (taskName != null) {
-                binding.taskNameText.setText(taskName);
+                binding.taskNameText.setText(this.taskName);
             }
         } catch (RuntimeException e) {
             Log.d(TAG, "no context");
