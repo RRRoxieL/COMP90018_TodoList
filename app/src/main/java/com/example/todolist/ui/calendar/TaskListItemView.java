@@ -86,7 +86,7 @@ public class TaskListItemView extends ConstraintLayout {
                     task.setTaskdown(isFinished.isChecked());
                     Toast.makeText(getContext(),String.valueOf(task.isTaskDown()),Toast.LENGTH_LONG).show();
                     Bundle bundle = new Bundle();
-                    bundle.putChar("actionTag",'a');
+                    bundle.putChar("actionTag",'u');
                     bundle.putSerializable("task",task);
                     message.setData(bundle);
                     handler.sendMessage(message);

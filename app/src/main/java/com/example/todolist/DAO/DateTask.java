@@ -1,5 +1,7 @@
 package com.example.todolist.DAO;
 
+import android.widget.Toast;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
@@ -24,10 +26,6 @@ public class DateTask implements Serializable{
         }
 
         if (tasks.containsKey(task.getID())){
-            Task task1 = tasks.get(task.getID());
-            if(task.getTaskdown()!=task1.getTaskdown()){
-
-            }
             tasks.put(task.getID(),task);
             return false;
         }else{
@@ -50,6 +48,14 @@ public class DateTask implements Serializable{
             return true;
         }else{
             return false;
+        }
+    }
+
+    public void downTask(Task task){
+        if(task.isTaskDown()){
+            this.finishedTaskNum+=1;
+        }else{
+            this.finishedTaskNum-=1;
         }
     }
 

@@ -158,6 +158,10 @@ public class DateFragment extends Fragment {
                     dateTask.addTask(task);
                 }else if(actionTag=='d'){
                     Toast.makeText(getContext(),Boolean.toString(dateTask.deleteTask(data.getString("ID"))), Toast.LENGTH_SHORT).show();
+                }else if(actionTag=='u'){
+                    Task task = (Task)data.getSerializable("task");
+                    Toast.makeText(getContext(),"handler report task: "+task.toString(),Toast.LENGTH_LONG).show();
+                    dateTask.downTask(task);
                 }
 
                 saveData();
