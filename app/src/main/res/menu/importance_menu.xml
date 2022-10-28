@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/NOT_IMPORTANT" android:title="NOT IMPORTANT"></item>
+    <item android:id="@+id/IMPORTANT" android:title="IMPORTANT"></item>
+    <item android:id="@+id/VERY_IMPORTANT" android:title="VERY IMPORTANT"></item>
+</resources>

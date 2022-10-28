@@ -22,4 +22,5 @@
     <string name="start">Start</string>
     <string name="set">Set</string>
     <string name="cancel">Cancel</string>
+    <string name="bundle_info_time">time</string>
 </resources>

@@ -8,31 +8,26 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.example.todolist.MainActivity;
 import com.example.todolist.R;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class LoginFragment extends Fragment {
 
     private View root;
     Button loginBtn;
     Button registerBtn;
-
-    EditText login_username, login_password;
-    Button signupBtn;
-
-    private FirebaseAuth mAuth;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,10 +49,6 @@ public class LoginFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        //auth components
-        mAuth = FirebaseAuth.getInstance();
-
         // Inflate the layout for this fragment
         if(root == null){
             root = inflater.inflate(R.layout.fragment_login, container, false);
@@ -72,60 +63,41 @@ public class LoginFragment extends Fragment {
             }
         });
 
-        login_username = root.findViewById(R.id.login_username);
-        login_password = root.findViewById(R.id.login_password);
-
         loginBtn = root.findViewById(R.id.btn_login);
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                userLogin(view);
-            }
 
+                FirebaseAuth auth = FirebaseAuth.getInstance();
+                String email = "dikaiz@student.unimelb.edu.au";
+                String password = "12345678Zdk";
+                final FirebaseUser[] currentUser = {null};
+                auth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if(task.isSuccessful()){
+                            currentUser[0] = FirebaseAuth.getInstance().getCurrentUser();
+                            Intent intent  = new Intent(getActivity(), MainActivity.class);
+                            startActivity(intent);
+                        }else{
+                            Toast.makeText(getContext(), "login failed", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                    @Override
+                    public void onSuccess(AuthResult authResult) {
+//                Toast.makeText(getContext(), currentUser[0].toString(), Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+//                Intent intent  = new Intent(getActivity(), MainActivity.class);
+//                startActivity(intent);
+
+            }
         });
 
         return root;
     }
 
-    private void userLogin(View view){
-        String username = login_username.getText().toString().trim();
-        String password = login_password.getText().toString().trim();
-
-        if(username.isEmpty()){
-            login_username.setError("Email is required!");
-            login_username.requestFocus();
-            return;
-        }
-
-        if(!Patterns.EMAIL_ADDRESS.matcher(username).matches()){
-            login_username.setError("Please enter a valid email!");
-            login_username.requestFocus();
-            return;
-        }
-
-        if(password.isEmpty()){
-            login_password.setError("password is required!");
-            login_password.requestFocus();
-            return;
-        }
-
-        if(password.length() < 6){
-            login_password.setError("Min password length is 6 characters!");
-            login_password.requestFocus();
-            return;
-        }
-
-        mAuth.signInWithEmailAndPassword(username, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()){
-                    Intent intent = new Intent(view.getContext(), MainActivity.class);
-                    view.getContext().startActivity(intent);
-                }else{
-
-                }
-            }
-        });
-    }
 
 }

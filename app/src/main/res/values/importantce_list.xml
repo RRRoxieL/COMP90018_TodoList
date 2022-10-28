@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="importancelist">
+        <item>NOT IMPORTANT</item>
+        <item>IMPORTANT</item>
+        <item>VERY IMPORTANT</item>
+    </string-array>
+
+
+</resources>
