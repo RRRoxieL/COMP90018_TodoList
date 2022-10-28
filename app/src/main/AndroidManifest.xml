@@ -26,9 +26,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service
-            android:name="com.example.todolist.services.ExitService"
-            android:stopWithTask="true" />
+        <service android:name=".TimerService"></service>
     </application>
 
 </manifest>
