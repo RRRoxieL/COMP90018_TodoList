@@ -74,7 +74,7 @@ public class TimerService extends Service {
 
                 String nodeID = time + "@" + date + "@" + taskID;
                 FocusTask currentFocus = new FocusTask(uid, taskName, taskID, minutesTotal, date, time);
-                DatabaseReference nodeRef = FirebaseDatabase.getInstance().getReference("Focus").child(nodeID);
+                DatabaseReference nodeRef = FirebaseDatabase.getInstance().getReference("Focus").child(uid).child(nodeID);
                 nodeRef.setValue(currentFocus);
             }
         }.start();
