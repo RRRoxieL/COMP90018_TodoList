@@ -13,6 +13,8 @@ import androidx.annotation.RequiresApi;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+
+import com.example.todolist.MainActivity;
 import com.example.todolist.TimerService;
 import com.example.todolist.R;
 import com.example.todolist.ServiceCallBack;
@@ -174,6 +176,7 @@ public class TimerFragment extends Fragment implements ServiceCallBack {
 
     public void initIntentAndStartService() {
         Intent intent = new Intent(getActivity(), TimerService.class);
+        intent.putExtra("uid", ((MainActivity)getActivity()).getUid());
         intent.putExtra("remainingTime", timerViewModel.getRemainingTime());
         intent.putExtra("targetTime", timerViewModel.getTargetTime());
         if (taskName != null & taskID != null) {

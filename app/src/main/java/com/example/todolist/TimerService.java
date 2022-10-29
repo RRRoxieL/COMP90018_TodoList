@@ -44,6 +44,7 @@ public class TimerService extends Service {
         long millisInFuture = intent.getIntExtra("remainingTime", 0);
         String taskName = intent.getStringExtra("taskName");
         String taskID = intent.getStringExtra("taskID");
+        String uid = intent.getStringExtra("uid");
 
         // Set timer according to the remaining time
         countDownTimer = new CountDownTimer(millisInFuture, INTERVAL) {
@@ -72,8 +73,8 @@ public class TimerService extends Service {
                 String date = dateNow.format(formatters);
 
                 String nodeID = time + "@" + date + "@" + taskID;
-                FocusTask currentFocus = new FocusTask(taskName, taskID, minutesTotal, date, time);
-                DatabaseReference nodeRef = FirebaseDatabase.getInstance().getReference("Focus").child(nodeID);
+                FocusTask currentFocus = new FocusTask(uid, taskName, taskID, minutesTotal, date, time);
+                DatabaseReference nodeRef = FirebaseDatabase.getInstance().getReference("Focus").child(uid).child(nodeID);
                 nodeRef.setValue(currentFocus);
             }
         }.start();
