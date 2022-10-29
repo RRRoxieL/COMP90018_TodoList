@@ -16,8 +16,10 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 
+import com.example.todolist.DAO.DateTask;
 import com.example.todolist.MainActivity;
 import com.example.todolist.databinding.FragmentAnalysisBinding;
+import com.example.todolist.ui.timer.FocusTask;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
@@ -48,6 +50,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -69,8 +73,7 @@ public class AnalysisFragment extends Fragment {
             public void onClick(View view) {
 
                 //read data from firebase
-
-                DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Focus");
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
                 ref.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DataSnapshot> task) {
@@ -79,12 +82,44 @@ public class AnalysisFragment extends Fragment {
                         }
                         else {
                             String text="0 workloads completed\nCompare to last period"+"-90%";
-                            text = String.valueOf(task.getResult().getValue());
+                            DataSnapshot dateTaskTable = task.getResult().child("DateTaskTable");
+                            DataSnapshot focusTaskTable = task.getResult().child("Focus");
+                            String currentDate = getCalculatedDate("dd-MM-yyyy", 0);
+                            String yesterdayDate = getCalculatedDate("dd-MM-yyyy", -1);
+                            ArrayList<FocusTask> focusTasks = new ArrayList<>();
+                            for(DataSnapshot ds : focusTaskTable.getChildren()) {
+                                String taskName = ds.child("taskName").getValue(String.class);
+                                String date = ds.child("date").getValue(String.class);
+                                Integer minutesFocused = ds.child("minutesFocused").getValue(Integer.class);
+                                String taskID = ds.child("taskID").getValue(String.class);
+                                String time = ds.child("time").getValue(String.class);
+                                focusTasks.add(new FocusTask(taskName, taskID, minutesFocused, date, time));
+                            }
 
+                            int todayMin = 0;
+                            int yesterdayMin = 0;
+                            int todayNumFocus = 0;
+                            int yesterdayNumFocus = 0;
+                            for (int i = 0; i < focusTasks.size(); i++) {
+                                if(focusTasks.get(i).getDate().equals(getCalculatedDate("yyyy-MM-dd", 0))){
+                                    todayMin += focusTasks.get(i).getMinutesFocused();
+                                    todayNumFocus ++;
+                                }else if(focusTasks.get(i).getDate().equals(getCalculatedDate("yyyy-MM-dd", -1))){
+                                    yesterdayMin += focusTasks.get(i).getMinutesFocused();
+                                    yesterdayNumFocus ++;
+                                }
+                            }
+                            
+                            Object value = dateTaskTable.child(currentDate).getValue();
+                            Gson gson = new GsonBuilder().setDateFormat("MMM dd, yyyy HH:mm:ss").create();
+                            DateTask dateTask = gson.fromJson(value.toString(), DateTask.class);
+                            if(dateTask==null || dateTask.getTasks()==null){
+                                Toast.makeText(getContext(), "read data == null", Toast.LENGTH_SHORT).show();
+                            }
                             Log.d("firebase", text);
                             //set the textview to show events statistics
-                            binding.textView1.setText(text);
-                            binding.textView2.setText("0h focus time completed\nCompare to last period"+"-60%");
+                            binding.textView1.setText(currentDate + "all task:" + dateTask.getAllTaskNum() + " finished:" + dateTask.getFinishedTaskNum());
+                            binding.textView2.setText(todayMin + "m focus time completed today\n"+ yesterdayMin+"m focus time completed yesterday\n");
                         }
                     }
                 });
