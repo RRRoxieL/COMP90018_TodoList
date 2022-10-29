@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+<<<<<<< HEAD
         <entry key="..\:/Android_Studio_WorkSpace/COMP90018_TodoList/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.176" />
         <entry key="..\:/Android_Studio_WorkSpace/COMP90018_TodoList/app/src/main/res/drawable/ic_analysis.xml" value="0.176" />
         <entry key="..\:/Android_Studio_WorkSpace/COMP90018_TodoList/app/src/main/res/drawable/ic_calendar.xml" value="0.173" />
@@ -42,13 +43,18 @@
         <entry key="..\:/JimmyCodes/AndroidCodes(Java)/COMP90018_TodoList/app/src/main/res/layout/fragment_time_picker_dialog.xml" value="0.22826086956521738" />
         <entry key="..\:/JimmyCodes/AndroidCodes(Java)/COMP90018_TodoList/app/src/main/res/layout/fragment_timer.xml" value="0.22826086956521738" />
         <entry key="..\:/JimmyCodes/AndroidCodes(Java)/COMP90018_TodoList/app/src/main/res/layout/task_list_item.xml" value="0.20923913043478262" />
+=======
+        <entry key="..\:/Users/16862/Desktop/AI/Ass/Group Project/COMP90018_TodoList/app/src/main/res/layout/fragment_register.xml" value="0.4" />
+        <entry key="app/src/main/res/drawable/circle_shape.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/circular_progress_bar.xml" value="0.1" />
+>>>>>>> 693f6b56a4d9281fdbffe6cfe5d36fd16a6d1420
         <entry key="app/src/main/res/drawable/ic_analysis.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_analysis.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_blank.xml" value="0.11944444444444445" />
         <entry key="app/src/main/res/layout/fragment_calendar.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.2717239379882813" />
         <entry key="app/src/main/res/layout/fragment_login.xml" value="0.1671195652173913" />
         <entry key="app/src/main/res/layout/fragment_profile.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_register.xml" value="0.32837219238281257" />
@@ -56,6 +62,7 @@
       </map>
     </option>
   </component>
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>

@@ -1,10 +1,12 @@
 package com.example.todolist.ui.profile;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import com.example.todolist.MainActivity;
 import com.example.todolist.R;
 import com.example.todolist.databinding.FragmentProfileBinding;
 import com.google.firebase.database.DataSnapshot;
@@ -29,7 +32,6 @@ public class ProfileFragment extends Fragment {
     private String userID;
 
     Button logoutBtn;
-    Button edit;
     TextView userName;
     TextView gender;
     TextView email;
@@ -46,7 +48,7 @@ public class ProfileFragment extends Fragment {
 
         mDatabase = FirebaseDatabase.getInstance();
         mReference = mDatabase.getReference();
-        userID = "pK5mJ29nbGbFNGIMB2fOde31tlw1";
+        userID = ((MainActivity)getActivity()).getUid();
 
         logoutBtn = root.findViewById(R.id.logOut);
         logoutBtn.setOnClickListener(new View.OnClickListener() {
