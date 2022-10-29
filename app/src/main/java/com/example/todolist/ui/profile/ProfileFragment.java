@@ -73,7 +73,16 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Object value = snapshot.getValue();
-                userName.setText(value.toString());
+
+                String[] userData = value.toString().split(",");
+                String[] parsed = userData;
+                for (int i = 0; i < 4; i++) {
+                    parsed[i] = userData[i].split("=")[1];
+                }
+                userName.setText(parsed[3].replace("}",""));
+                gender.setText(parsed[1]);
+                email.setText(parsed[0]);
+                password.setText(parsed[2]);
             }
 
             @Override
