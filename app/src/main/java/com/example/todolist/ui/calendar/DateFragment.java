@@ -102,6 +102,7 @@ public class DateFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+
         binding = null;
     }
 
@@ -118,6 +119,8 @@ public class DateFragment extends Fragment {
                 TaskListItemView taskListItemView = new TaskListItemView(getContext(),entry.getValue(),dateString,handler,this);
                 binding.workLayout.addView(taskListItemView);
             }
+        }else if(dateTask!=null && dateTask.getTasks()==null && binding!=null && binding.workLayout!=null){
+            binding.workLayout.removeAllViews();
         }
     }
 
@@ -199,7 +202,7 @@ public class DateFragment extends Fragment {
      * this function replaced readData()
      */
     private void bindDateTask(){
-        databaseTable.child(dateString).addValueEventListener(new ValueEventListener() {
+        ValueEventListener valueEventListener = new ValueEventListener() {
             /**
              * when the data in database changed, read the data into dateTask and update view
              * @param snapshot
@@ -207,10 +210,10 @@ public class DateFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Object value = snapshot.getValue();
-                if(value!=null){
+                if (value != null) {
                     Gson gson = new GsonBuilder().setDateFormat("MMM dd, yyyy HH:mm:ss").create();
                     dateTask = gson.fromJson(value.toString(), DateTask.class);
-                    if(dateTask==null || dateTask.getTasks()==null){
+                    if (dateTask == null) {
                         Toast.makeText(getContext(), "read data == null", Toast.LENGTH_SHORT).show();
                     }
                     updateView();
@@ -222,7 +225,9 @@ public class DateFragment extends Fragment {
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.w(TAG, "loadPost:onCancelled", error.toException());
             }
-        });
+        };
+
+        databaseTable.child(dateString).addValueEventListener(valueEventListener);
     }
 
 

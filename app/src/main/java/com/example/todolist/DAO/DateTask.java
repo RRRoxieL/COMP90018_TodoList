@@ -41,6 +41,9 @@ public class DateTask implements Serializable{
     }
 
     public boolean deleteTask(String id){
+        if(id == null){
+            return false;
+        }
         Task removedTask = tasks.remove(id);
         if(removedTask!=null){
             this.allTaskNum -= 1;

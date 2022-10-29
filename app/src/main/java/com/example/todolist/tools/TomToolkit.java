@@ -63,43 +63,53 @@ import java.util.Set;
  * a toolkit that includes all neccessary functions for calendar and home fragment.
  */
 public class TomToolkit {
-    private static final DatabaseReference dateTaskTable_main= FirebaseDatabase.getInstance().getReference("DateTaskTable");;
-    private static final StorageReference fireStorage_main = FirebaseStorage.getInstance().getReference("Picture");;
+    final static private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+    private static final DatabaseReference dateTaskTable_main;
+    private static final StorageReference fireStorage_main;
     private static Long ID;
     private static DatabaseReference dateTaskTable;
     private static StorageReference fireStorage;
     private static String userID;
 
-    final static private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+
+
+
+    /**
+     * test the connection to firebase
+     */
+    static {
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        dateTaskTable_main= FirebaseDatabase.getInstance().getReference("DateTaskTable");
+        fireStorage_main = FirebaseStorage.getInstance().getReference("Picture");
+//        FirebaseDatabase.getInstance().getReference("GlobalTaskID").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<DataSnapshot> task) {
+//                if (!task.isSuccessful()) {
+//                    Log.e("firebase", "Error getting data", task.getException());
+//                }
+//                else {
+//                    Log.d("firebase", String.valueOf(task.getResult().getValue()));
+//                    ID = (Long)task.getResult().getValue();
+//                }
+//            }
+//
+//        });
+//        if(ID==null){
+//            FirebaseDatabase.getInstance().getReference("GlobalTaskID").setValue(1);
+//        }
+    }
 
     public static void initializeUser(String userID){
         TomToolkit.userID = userID;
         dateTaskTable = dateTaskTable_main.child(TomToolkit.userID);
         fireStorage = fireStorage_main.child(TomToolkit.userID);
-    }
-    /**
-     * test the connection to firebase
-     */
-    static {
-        FirebaseDatabase.getInstance().getReference("GlobalTaskID").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if (!task.isSuccessful()) {
-                    Log.e("firebase", "Error getting data", task.getException());
-                }
-                else {
-                    Log.d("firebase", String.valueOf(task.getResult().getValue()));
-                    ID = (Long)task.getResult().getValue();
-                }
-            }
-
-        });
-        if(ID==null){
-            FirebaseDatabase.getInstance().getReference("GlobalTaskID").setValue(1);
-        }
+        dateTaskTable.keepSynced(true);
     }
 
     public static String getCurrentUserID(){
+        if(TomToolkit.userID == null){
+
+        }
         return TomToolkit.userID;
     }
 
@@ -117,7 +127,12 @@ public class TomToolkit {
         if(action!=GlobalValues.ACTIONTAG_DEL){
             bundle.putSerializable(GlobalValues.BUNDLE_INFO_TASK,task);
         }else{
-            bundle.putString(GlobalValues.BUNDLE_INFO_TASKID,task.getID());
+            if(task != null){
+                bundle.putString(GlobalValues.BUNDLE_INFO_TASKID,task.getID());
+            }else{
+                bundle.putString(GlobalValues.BUNDLE_INFO_TASKID,null);
+            }
+
         }
         message.setData(bundle);
         handler.sendMessage(message);

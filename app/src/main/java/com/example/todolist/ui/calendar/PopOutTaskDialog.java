@@ -91,7 +91,7 @@ public class PopOutTaskDialog extends DialogFragment {
     private ActivityResultLauncher<Intent> cameraActivityResultLauncher;
     private Uri imageUri;
     private Object imgData;
-
+    private String userID;
     /**
      * constructor without a task
      * used for adding new tasks.
@@ -101,6 +101,7 @@ public class PopOutTaskDialog extends DialogFragment {
     public PopOutTaskDialog(String date, Handler handler) {
         this.date = date;
         this.handler=handler;
+        this.userID = TomToolkit.getCurrentUserID();
 
     }
 
@@ -115,6 +116,7 @@ public class PopOutTaskDialog extends DialogFragment {
         this.date = date;
         this.handler = handler;
         this.task = task;
+        this.userID = TomToolkit.getCurrentUserID();
     }
 
     /**
@@ -171,10 +173,6 @@ public class PopOutTaskDialog extends DialogFragment {
         ImageView imageView = (ImageView)getView().findViewById(R.id.img);
         if(imageView==null || imageUri==null){
             Toast.makeText(getContext(), "please select a picture", Toast.LENGTH_SHORT).show();
-        }else{
-            if(task==null){
-                task = new Task(getActivity(),date,1,1,"name","desc",null,null);
-            }
         }
         setPicture(data,imageView);
     }
@@ -325,7 +323,7 @@ public class PopOutTaskDialog extends DialogFragment {
             binding.timepicker.setMinute(task.getMinute());
             binding.descrptText.setText(task.getDescription());
             if(task.getPicPath()!=null){
-                TomToolkit.getPicture(task.getPicPath(), getContext(),binding.img);
+                TomToolkit.getPicture(task.getPicPath(),getContext(),binding.img);
             }
             if(task.getImportance()!=null){
                 int position = Task.Importance.getPosition(task.getImportance());

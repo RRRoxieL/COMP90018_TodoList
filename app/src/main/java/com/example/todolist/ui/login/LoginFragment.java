@@ -16,10 +16,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.example.todolist.MainActivity;
 import com.example.todolist.R;
 import com.example.todolist.tools.TomToolkit;
+import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -130,10 +132,15 @@ public class LoginFragment extends Fragment {
                     intent.setClass(view.getContext(), MainActivity.class);
                     view.getContext().startActivity(intent);
                     TomToolkit.initializeUser(uid);
-
+                    Toast.makeText(getContext(),"login success!",Toast.LENGTH_SHORT).show();
                 }else{
-
+                    Toast.makeText(getContext(),"login failed!",Toast.LENGTH_SHORT).show();
                 }
+            }
+        }).addOnCanceledListener(new OnCanceledListener() {
+            @Override
+            public void onCanceled() {
+                Toast.makeText(getContext(),"login cancled",Toast.LENGTH_SHORT).show();
             }
         });
     }
