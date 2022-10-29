@@ -4,6 +4,7 @@ import static android.content.ContentValues.TAG;
 
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.media.ToneGenerator;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -115,7 +116,7 @@ public class HomeFragment extends Fragment {
 
         //initialize datetask
         try {
-            dateTask = new DateTask(TomToolkit.getDate(currentDate));
+            dateTask = new DateTask(TomToolkit.getDate(currentDate),TomToolkit.getCurrentUserID());
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -132,7 +133,7 @@ public class HomeFragment extends Fragment {
                 removeBindDateTask();
                 currentDate = createCurrentDate(dayOfMonth,month,year);
                 try {
-                    dateTask = new DateTask(TomToolkit.getDate(currentDate));
+                    dateTask = new DateTask(TomToolkit.getDate(currentDate), TomToolkit.getCurrentUserID());
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }

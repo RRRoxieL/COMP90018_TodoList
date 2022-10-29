@@ -27,6 +27,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
 import com.example.todolist.DAO.DateTask;
+import com.example.todolist.MainActivity;
 import com.example.todolist.R;
 import com.example.todolist.ui.calendar.DateFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -62,12 +63,20 @@ import java.util.Set;
  * a toolkit that includes all neccessary functions for calendar and home fragment.
  */
 public class TomToolkit {
-    private static final DatabaseReference dateTaskTable = FirebaseDatabase.getInstance().getReference("DateTaskTable");
-    private static final StorageReference fireStorage = FirebaseStorage.getInstance().getReference("Picture");
+    private static final DatabaseReference dateTaskTable_main= FirebaseDatabase.getInstance().getReference("DateTaskTable");;
+    private static final StorageReference fireStorage_main = FirebaseStorage.getInstance().getReference("Picture");;
     private static Long ID;
+    private static DatabaseReference dateTaskTable;
+    private static StorageReference fireStorage;
+    private static String userID;
 
     final static private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
+    public static void initializeUser(String userID){
+        TomToolkit.userID = userID;
+        dateTaskTable = dateTaskTable_main.child(TomToolkit.userID);
+        fireStorage = fireStorage_main.child(TomToolkit.userID);
+    }
     /**
      * test the connection to firebase
      */
@@ -88,6 +97,10 @@ public class TomToolkit {
         if(ID==null){
             FirebaseDatabase.getInstance().getReference("GlobalTaskID").setValue(1);
         }
+    }
+
+    public static String getCurrentUserID(){
+        return TomToolkit.userID;
     }
 
     /**

@@ -19,6 +19,7 @@ import android.widget.ProgressBar;
 
 import com.example.todolist.MainActivity;
 import com.example.todolist.R;
+import com.example.todolist.tools.TomToolkit;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -121,14 +122,14 @@ public class LoginFragment extends Fragment {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-
+                    String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
                     Intent intent = new Intent();
                     Bundle bundle = new Bundle();
-                    bundle.putString("UID", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    bundle.putString("UID", uid);
                     intent.putExtras(bundle);
                     intent.setClass(view.getContext(), MainActivity.class);
                     view.getContext().startActivity(intent);
-
+                    TomToolkit.initializeUser(uid);
 
                 }else{
 

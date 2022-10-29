@@ -14,9 +14,11 @@ public class DateTask implements Serializable{
     private HashMap<String,Task> tasks;
     private int allTaskNum = 0;
     private int finishedTaskNum = 0;
+    private String userID;
 
-    public DateTask(Date date){
+    public DateTask(Date date, String userID){
         this.date = date;
+        this.userID = userID;
     }
 
     public boolean addTask(Task task){
@@ -66,6 +68,14 @@ public class DateTask implements Serializable{
                 "date=" + date +
                 "\n tasks=" + tasks +
                 '}';
+    }
+
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
     }
 
     public Date getDate() {

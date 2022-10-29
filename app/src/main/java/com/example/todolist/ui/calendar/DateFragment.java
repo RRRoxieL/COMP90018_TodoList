@@ -109,7 +109,7 @@ public class DateFragment extends Fragment {
      * refresh the view on the page, according to data stored in dataTask.
      */
     private void updateView(){
-        if(dateTask!=null && dateTask.getTasks()!=null){
+        if(dateTask!=null && dateTask.getTasks()!=null && binding!=null && binding.workLayout!=null){
             //remove old views
             binding.workLayout.removeAllViews();
             //add new views
@@ -140,7 +140,7 @@ public class DateFragment extends Fragment {
         //because read data from the database takes some time, initialize an empty datatask to avoid crash
         //this datetask would be replaced by data fetched from database successfully.
         try {
-            this.dateTask = new DateTask(TomToolkit.getDate(dateString));
+            this.dateTask = new DateTask(TomToolkit.getDate(dateString),TomToolkit.getCurrentUserID());
         } catch (ParseException e) {
             e.printStackTrace();
             System.exit(1);
