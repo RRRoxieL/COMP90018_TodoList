@@ -160,7 +160,7 @@ public class TomToolkit {
                 }).addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
                     @Override
                     public void onProgress(@NonNull FileDownloadTask.TaskSnapshot snapshot) {
-                        imageView.setImageResource(R.drawable.ic_frag_importance);
+                        imageView.setImageResource(R.drawable.ic_pic_load);
                         imageView.setClickable(false);
                         imageView.setLongClickable(false);
                     }
