@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -29,7 +30,6 @@ public class ProfileFragment extends Fragment {
     private String userID;
 
     Button logoutBtn;
-    Button edit;
     TextView userName;
     TextView gender;
     TextView email;

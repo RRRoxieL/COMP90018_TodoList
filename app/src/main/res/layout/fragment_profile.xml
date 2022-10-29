@@ -34,7 +34,7 @@
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/constraintLayout2"
                         android:layout_width="match_parent"
-                        android:layout_height="100dp"
+                        android:layout_height="180dp"
                         android:background="#01e1c6"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
@@ -45,9 +45,8 @@
                             android:id="@+id/imageView2"
                             android:layout_width="86dp"
                             android:layout_height="59dp"
-                            android:layout_marginTop="24dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.498"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
                             tools:src="@tools:sample/avatars" />
@@ -88,14 +87,14 @@
                                 android:layout_marginTop="20sp"
                                 android:layout_marginBottom="20sp"
                                 android:layout_weight="1"
-                                android:text="Change"
+                                android:text="Loading"
                                 android:textColor="#b2b2b2"
                                 android:textSize="18sp" />
 
                         </LinearLayout>
 
                         <View
-                            android:id="@+id/view1"
+                            android:id="@+id/view2"
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
                             android:background="#b2b2b2" />
@@ -123,13 +122,13 @@
                                 android:layout_marginTop="20sp"
                                 android:layout_marginBottom="20sp"
                                 android:layout_weight="1"
-                                android:text="Change"
+                                android:text="Loading"
                                 android:textColor="#b2b2b2"
                                 android:textSize="18sp" />
                         </LinearLayout>
 
                         <View
-                            android:id="@+id/view2"
+                            android:id="@+id/view1"
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
                             android:background="#b2b2b2" />
@@ -157,7 +156,7 @@
                                 android:layout_marginTop="20sp"
                                 android:layout_marginBottom="20sp"
                                 android:layout_weight="1"
-                                android:text="Change"
+                                android:text="Loading"
                                 android:textColor="#b2b2b2"
                                 android:textSize="18sp" />
                         </LinearLayout>
@@ -191,7 +190,7 @@
                                 android:layout_marginTop="20sp"
                                 android:layout_marginBottom="20sp"
                                 android:layout_weight="1"
-                                android:text="Change"
+                                android:text="Loading"
                                 android:textColor="#b2b2b2"
                                 android:textSize="18sp" />
                         </LinearLayout>
@@ -202,25 +201,15 @@
                             android:layout_height="1dp"
                             android:background="#b2b2b2" />
 
-                        <ImageButton
-                            android:id="@+id/imageButton"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="20sp"
-                            android:layout_marginBottom="20sp"
-                            android:src="@android:drawable/ic_menu_edit"
-                            android:visibility="invisible"
-                            tools:ignore="SpeakableTextPresentCheck" />
-
                         <Button
                             android:id="@+id/logOut"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="#01e1c6"
-                            android:textColor="@color/white"
                             android:text="Log Out"
+                            android:textColor="#FFFFFF"
                             android:textStyle="bold"
-                            tools:ignore="TouchTargetSizeCheck" />
+                            tools:ignore="TouchTargetSizeCheck,TextContrastCheck" />
 
                     </LinearLayout>
 
