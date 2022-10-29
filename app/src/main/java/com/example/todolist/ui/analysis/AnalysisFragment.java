@@ -92,7 +92,8 @@ public class AnalysisFragment extends Fragment {
                                 Integer minutesFocused = ds.child("minutesFocused").getValue(Integer.class);
                                 String taskID = ds.child("taskID").getValue(String.class);
                                 String time = ds.child("time").getValue(String.class);
-                                focusTasks.add(new FocusTask(taskName, taskID, minutesFocused, date, time));
+                                String uid = ds.child("uid").getValue(String.class);
+                                focusTasks.add(new FocusTask(uid, taskName, taskID, minutesFocused, date, time));
                             }
 
                             int todayMin = 0;
