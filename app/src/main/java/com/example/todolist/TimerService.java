@@ -14,6 +14,8 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+
 import com.example.todolist.ui.timer.FocusTask;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -65,7 +67,10 @@ public class TimerService extends Service {
 
                 // Create FocusTask object and save in realtime database
                 String time = String.valueOf(LocalTime.now()).substring(0, 8);
-                String date = String.valueOf(LocalDate.now());
+                LocalDate dateNow = LocalDate.now();
+                DateTimeFormatter formatters = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+                String date = dateNow.format(formatters);
+
                 String nodeID = time + "@" + date + "@" + taskID;
                 FocusTask currentFocus = new FocusTask(taskName, taskID, minutesTotal, date, time);
                 DatabaseReference nodeRef = FirebaseDatabase.getInstance().getReference("Focus").child(nodeID);
