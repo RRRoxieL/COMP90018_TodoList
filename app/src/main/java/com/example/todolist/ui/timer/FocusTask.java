@@ -6,9 +6,11 @@ public class FocusTask {
     private int minutesFocused;
     private String date;
     private String time;
+    private String uid;
 
 
-    public FocusTask(String taskName, String taskID, int minutesFocused, String date, String time) {
+    public FocusTask(String uid, String taskName, String taskID, int minutesFocused, String date, String time) {
+        this.uid = uid;
         if (taskName == null || taskID == null) {
             this.taskName = "None";
             this.taskID = "None";
@@ -22,6 +24,13 @@ public class FocusTask {
         this.time = String.valueOf(time);
     }
 
+    public void setUid(String Uid){
+        this.uid = Uid;
+    }
+
+    public String getUid(){
+        return this.uid;
+    }
 
     public String getTaskName() {
         return taskName;
