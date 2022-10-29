@@ -219,6 +219,10 @@ public class HomeFragment extends Fragment {
                 }
             }
             setDutyText();
+        }else{
+            this.dutyAmount = 0;
+            this.dutyFinished = 0;
+            setDutyText();
         }
     }
 
