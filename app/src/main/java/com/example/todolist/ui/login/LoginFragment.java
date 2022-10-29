@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class LoginFragment extends Fragment {
 
@@ -119,8 +121,15 @@ public class LoginFragment extends Fragment {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-                    Intent intent = new Intent(view.getContext(), MainActivity.class);
+
+                    Intent intent = new Intent();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("UID", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    intent.putExtras(bundle);
+                    intent.setClass(view.getContext(), MainActivity.class);
                     view.getContext().startActivity(intent);
+
+
                 }else{
 
                 }
