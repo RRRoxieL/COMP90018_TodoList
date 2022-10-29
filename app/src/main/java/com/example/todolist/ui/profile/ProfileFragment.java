@@ -83,8 +83,8 @@ public class ProfileFragment extends Fragment {
                 }
                 userName.setText(parsed[3].replace("}",""));
                 gender.setText(parsed[1]);
-                email.setText(parsed[0]);
-                password.setText(parsed[2]);
+                email.setText(parsed[2]);
+                password.setText(parsed[0]);
             }
 
             @Override
