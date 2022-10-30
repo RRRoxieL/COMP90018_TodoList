@@ -61,21 +61,16 @@ public class AnalysisFragment extends Fragment {
                 new ViewModelProvider(this).get(AnalysisViewModel.class);
 
         binding = FragmentAnalysisBinding.inflate(inflater, container, false);
-
-        ArrayList<String> last14Days = new ArrayList<String>();
-        //last14Days.get(13) is today, last14Days.get(12) is yesterday and so on
-        for (int i = 0; i < 14; i++) {
-            int j = 13 - i;
-            last14Days.add(getCalculatedDate("dd-MM-yyyy" , -j));
-        }
-        int[] focusMin = new int[last14Days.size()];
-        int[] focusNum = new int[last14Days.size()];
-        int[] yesterdayFocusDistribution = new int[24];
-        int[] workload = new int[14];
-
+        int period = 7; //one period has 7 days
+        int numDays = 2*period;
         binding.buttonYesterday.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //set visibility
+                binding.barChart.setVisibility(view.VISIBLE);
+                binding.lineChart.setVisibility(view.VISIBLE);
+                binding.barChart1.setVisibility(view.VISIBLE);
+                binding.pieChart.setVisibility(view.GONE);
                 //read data from firebase
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
                 ref.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
@@ -85,117 +80,45 @@ public class AnalysisFragment extends Fragment {
                             Log.e("firebase", "Error getting data", task.getException());
                         }
                         else {
-                            String userID = ((MainActivity)getActivity()).getUid();
-                            DataSnapshot dateTaskTable = task.getResult().child("DateTaskTable").child(userID);
-                            DataSnapshot focusTaskTable = task.getResult().child("Focus").child(userID);
-
-                            String currentDate = last14Days.get(last14Days.size()-1);
-                            String yesterdayDate = last14Days.get(last14Days.size()-2);
 
                             //read focus data
-                            ArrayList<FocusTask> focusTasks = new ArrayList<>();
-                            for(DataSnapshot ds : focusTaskTable.getChildren()) {
-                                String taskName = ds.child("taskName").getValue(String.class);
-                                String date = ds.child("date").getValue(String.class);
-                                Integer minutesFocused = ds.child("minutesFocused").getValue(Integer.class);
-                                String taskID = ds.child("taskID").getValue(String.class);
-                                String time = ds.child("time").getValue(String.class);
-                                String uid = ds.child("uid").getValue(String.class);
-                                focusTasks.add(new FocusTask(uid, taskName, taskID, minutesFocused, date, time));
-                            }
-
-                            for (int i = 0; i < focusTasks.size(); i++) {
-                                //get focus min and focus number for each day in the last 14 days
-                                for (int j = 0; j < last14Days.size(); j++) {
-                                    if(focusTasks.get(i).getDate().equals(last14Days.get(j))){
-                                        focusMin[j] += focusTasks.get(i).getMinutesFocused();
-                                        focusNum[j] ++;
-                                    }
-                                    //get yesterday 24h focus time distribution
-                                    if(focusTasks.get(i).getDate().equals(yesterdayDate)){
-                                        int minFocused = focusTasks.get(i).getMinutesFocused();
-                                        String[] time = focusTasks.get(i).getTime().split(":");
-                                        int hour = Integer.parseInt(time[0]);
-                                        int min = Integer.parseInt(time[1]);
-                                        if(min+minFocused>59){
-                                            yesterdayFocusDistribution[hour] += 60 - min;
-                                            hour++;
-                                            min = min + minFocused - 60;
-                                            if (hour < 24){
-                                                yesterdayFocusDistribution[hour] += min;
-                                            }
-                                        }else{
-                                            yesterdayFocusDistribution[hour] += minFocused;
-                                        }
-
-
-                                    }
-                                }
-                            }
+                            ArrayList<FocusTask> focusTasks = readFocusTask(task);
+                            int[][] stat = getFocusStatistics(focusTasks, numDays);
+                            int[] focusMin = stat[0];
+                            int[] focusNum = stat[1];
+                            int[] yesterdayFocusDistribution = stat[2];
 
                             //read event/date data
-                            ArrayList<DateTask> dateTasks = new ArrayList<>();
-                            for (int i = 0; i < last14Days.size(); i++) {
-                                if(dateTaskTable.hasChild(last14Days.get(i))){
-                                    Object value = dateTaskTable.child(last14Days.get(i)).getValue();
-                                    Gson gson = new GsonBuilder().setDateFormat("MMM dd, yyyy HH:mm:ss").create();
-                                    DateTask dateTask = gson.fromJson(value.toString(), DateTask.class);
-                                    if(dateTask==null || dateTask.getTasks()==null){
-                                        Toast.makeText(getContext(), "read data == null", Toast.LENGTH_SHORT).show();
-                                    }
-                                    dateTasks.add(dateTask);
-                                }else {
-                                    DateTask dateTask = new DateTask();
-                                    dateTask.setAllTaskNum(0);
-                                    dateTask.setFinishedTaskNum(0);
-                                    dateTasks.add(dateTask);
-                                }
-                            }
-                            for (int i = 0; i < workload.length; i++) {
-                                workload[i] = dateTasks.get(i).getFinishedTaskNum();
-                            }
+                            ArrayList<DateTask> dateTasks = readDateTask(task, numDays);
+                            int[] workload = getWorkload(dateTasks, numDays);
+
                             DateTask todayTask = dateTasks.get(dateTasks.size()-1);
                             DateTask yesterdayTask = dateTasks.get(dateTasks.size()-2);
 
-                            //set the textview to show events statistics
+                            //set the textview to show statistics
                             binding.textView1.setText(todayTask.getFinishedTaskNum() + " task(s) finished today\n"
                                     +yesterdayTask.getFinishedTaskNum() + " task(s) finished yesterday");
                             binding.textView2.setText(focusMin[focusMin.length-1] + " min focused today\n"
                                     + focusMin[focusMin.length-2]+" min focused yesterday");
 
-
-                            //set visibility
-                            binding.barChart.setVisibility(view.VISIBLE);
-                            binding.lineChart.setVisibility(view.VISIBLE);
-                            binding.barChart1.setVisibility(view.VISIBLE);
-                            binding.pieChart.setVisibility(view.GONE);
-
                             //draw barchart
-                            drawBarChart(binding.barChart,"Focused time(m)", 7, focusMin);
+                            drawBarChart(binding.barChart,"Focused time(m)", period, focusMin);
 
                             //draw line chart
-                            drawLineChart(binding.lineChart, "Workload trend last 7 days", 7, workload);
+                            drawLineChart(binding.lineChart, "Workload trend last 7 days", period, workload);
 
                             //draw bar chart2
-                            drawBarChart(binding.barChart1, "Yesterday focus time distribution per hour", 24, yesterdayFocusDistribution);
+                            drawBarChart(binding.barChart1, "Yesterday 24h focus time distribution", 24, yesterdayFocusDistribution);
                         }
                     }
                 });
-
-
-
-
             }
 
         });
-        int[] lastPeriodFinished = new int[7];
-        int[] lastPeriodAll = new int[7];
-        int[] thisPeriodFinished = new int[7];
-        int[] thisPeriodAll = new int[7];
+
         binding.buttonEvents.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 //set visibility
                 binding.barChart1.setVisibility(view.GONE);
                 binding.barChart.setVisibility(view.VISIBLE);
@@ -211,38 +134,21 @@ public class AnalysisFragment extends Fragment {
                             Log.e("firebase", "Error getting data", task.getException());
                         }
                         else {
-                            String userID = ((MainActivity)getActivity()).getUid();
-                            DataSnapshot dateTaskTable = task.getResult().child("DateTaskTable").child(userID);
 
                             //read event/date data
-                            ArrayList<DateTask> dateTasks = new ArrayList<>();
-                            for (int i = 0; i < last14Days.size(); i++) {
-                                if(dateTaskTable.hasChild(last14Days.get(i))){
-                                    Object value = dateTaskTable.child(last14Days.get(i)).getValue();
-                                    Gson gson = new GsonBuilder().setDateFormat("MMM dd, yyyy HH:mm:ss").create();
-                                    DateTask dateTask = gson.fromJson(value.toString(), DateTask.class);
-                                    if(dateTask==null || dateTask.getTasks()==null){
-                                        Toast.makeText(getContext(), "read data == null", Toast.LENGTH_SHORT).show();
-                                    }
-                                    dateTasks.add(dateTask);
-                                }else {
-                                    DateTask dateTask = new DateTask();
-                                    dateTask.setAllTaskNum(0);
-                                    dateTask.setFinishedTaskNum(0);
-                                    dateTasks.add(dateTask);
-                                }
-                            }
-                            for (int i = 0; i < workload.length; i++) {
-                                workload[i] = dateTasks.get(i).getFinishedTaskNum();
-                            }
-                            DateTask todayTask = dateTasks.get(dateTasks.size()-1);
-                            DateTask yesterdayTask = dateTasks.get(dateTasks.size()-2);
 
-                            for (int i = 0; i < 7; i++) {
+                            ArrayList<DateTask> dateTasks = readDateTask(task, numDays);
+                            int[] workload = getWorkload(dateTasks, numDays);
+
+                            int[] lastPeriodFinished = new int[period];
+                            int[] lastPeriodAll = new int[period];
+                            int[] thisPeriodFinished = new int[period];
+                            int[] thisPeriodAll = new int[period];
+                            for (int i = 0; i < period; i++) {
                                 lastPeriodFinished[i] = dateTasks.get(i).getFinishedTaskNum();
                                 lastPeriodAll[i] = dateTasks.get(i).getAllTaskNum();
-                                thisPeriodFinished[i] = dateTasks.get(7+i).getFinishedTaskNum();
-                                thisPeriodAll[i] = dateTasks.get(7+i).getAllTaskNum();
+                                thisPeriodFinished[i] = dateTasks.get(period+i).getFinishedTaskNum();
+                                thisPeriodAll[i] = dateTasks.get(period+i).getAllTaskNum();
                             }
 
                             //set the textview to show events statistics
@@ -255,14 +161,16 @@ public class AnalysisFragment extends Fragment {
                                     +sum(thisPeriodFinished) + " task(s) finished");
 
                             //redraw bar chart
-                            drawBarChart(binding.barChart, "Events distribution this period including unfinished", 7, thisPeriodAll);
+                            drawBarChart(binding.barChart, "Events distribution this period including unfinished"
+                                    , period, thisPeriodAll);
 
                             //redraw line chart
-                            drawLineChart(binding.lineChart, "Workload trend last 14 days", 14, workload);
+                            drawLineChart(binding.lineChart, "Workload trend last 14 days"
+                                    , numDays, workload);
 
                             //pie chart
-                            drawPieChart(binding.pieChart, "Event completion rate this period", sum(thisPeriodFinished),
-                                    sum(thisPeriodAll)-sum(thisPeriodFinished));
+                            drawPieChart(binding.pieChart, "Event completion rate this period"
+                                    , sum(thisPeriodFinished), sum(thisPeriodAll)-sum(thisPeriodFinished));
 
                         }
                     }
@@ -275,24 +183,60 @@ public class AnalysisFragment extends Fragment {
         binding.buttonTimers.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //read data from firebase
-
                 //set visibility
                 binding.pieChart.setVisibility(view.GONE);
                 binding.barChart1.setVisibility(view.VISIBLE);
                 binding.barChart.setVisibility(view.VISIBLE);
                 binding.lineChart.setVisibility(view.VISIBLE);
 
-                //set textview
-                binding.textView1.setText("3 tomatoes harvested\nCompare to last period"+"+50%");
-                binding.textView2.setText("10h focus time completed\nCompare to last period"+"+30%");
+                //read data from firebase
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+                ref.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DataSnapshot> task) {
+                        if (!task.isSuccessful()) {
+                            Log.e("firebase", "Error getting data", task.getException());
+                        }
+                        else {
+                            //read focus data
+                            ArrayList<FocusTask> focusTasks = readFocusTask(task);
+                            int[][] stat = getFocusStatistics(focusTasks, numDays);
+                            int[] focusMin = stat[0];
+                            int[] focusNum = stat[1];
+                            int[] yesterdayFocusDistribution = stat[2];
 
-                //draw line chart
-                drawLineChart(binding.lineChart, "Tomato Focus Trend", 14, workload);
+                            int[] thisPeriodTomato = new int[period];
+                            int[] thisPeriodMin = new int[period];
+                            int[] lastPeriodTomato = new int[period];
+                            int[] lastPeriodMin = new int[period];
+                            for (int i = 0; i < period; i++) {
+                                lastPeriodTomato[i] = focusNum[i];
+                                thisPeriodTomato[i] = focusNum[i+period];
+                                lastPeriodMin[i] = focusMin[i];
+                                thisPeriodMin[i] = focusMin[i+period];
+                            }
+                            //set the textview to show statistics
+                            binding.textView1.setText("This period(latest 7 days):\n"
+                                    +sum(thisPeriodTomato) + " tomato(es) harvested\n"
+                                    +sum(thisPeriodMin) + " min focused");
+
+                            binding.textView2.setText("Last period:\n"
+                                    +sum(lastPeriodTomato) + " tomato(es) harvested\n"
+                                    +sum(lastPeriodMin) + " min focused");
 
 
-                //draw bar chart1
-                drawBarChart(binding.barChart1, "Focus time distribution", 24, yesterdayFocusDistribution);
+                            //draw bar chart
+                            drawBarChart(binding.barChart, "Tomatoes distribution this period", period, thisPeriodTomato);
+
+                            //draw line chart
+                            drawLineChart(binding.lineChart, "Focus time(min) trend last 14 days", numDays, focusMin);
+
+
+                            //draw bar chart1
+                            drawBarChart(binding.barChart1, "Yesterday 24h focus time distribution", 24, yesterdayFocusDistribution);
+                        }
+                    }
+                });
 
 
             }
@@ -318,6 +262,109 @@ public class AnalysisFragment extends Fragment {
         SimpleDateFormat s = new SimpleDateFormat(dateFormat);
         cal.add(Calendar.DAY_OF_YEAR, days);
         return s.format(new Date(cal.getTimeInMillis()));
+    }
+
+    private int[] getWorkload(ArrayList<DateTask> dateTasks, int numDays){
+        int[] workload = new int[numDays];
+        for (int i = 0; i < workload.length; i++) {
+            workload[i] = dateTasks.get(i).getFinishedTaskNum();
+        }
+        return workload;
+    }
+
+    private int[][] getFocusStatistics(ArrayList<FocusTask> focusTasks, int numDays){
+        ArrayList<String> lastDays = new ArrayList<String>();
+        //last14Days.get(13) is today, last14Days.get(12) is yesterday and so on
+        for (int i = 0; i < numDays; i++) {
+            int j = numDays - 1 - i;
+            lastDays.add(getCalculatedDate("dd-MM-yyyy" , -j));
+        }
+        String yesterdayDate = lastDays.get(lastDays.size()-2);
+        int[][] stat = new int[3][];
+        stat[0] = new int[lastDays.size()];//FocusMin
+        stat[1] = new int[lastDays.size()];//FocusNum
+        stat[2] = new int[24];//yesterday 24h distribution
+
+        for (int i = 0; i < focusTasks.size(); i++) {
+            //get focus min and focus number for each day in the last 14 days
+            for (int j = 0; j < lastDays.size(); j++) {
+                if(focusTasks.get(i).getDate().equals(lastDays.get(j))){
+                    stat[0][j] += focusTasks.get(i).getMinutesFocused();
+                    stat[1][j] ++;
+                }
+                //get yesterday 24h focus time distribution
+                if(focusTasks.get(i).getDate().equals(yesterdayDate)){
+                    int minFocused = focusTasks.get(i).getMinutesFocused();
+                    String[] time = focusTasks.get(i).getTime().split(":");
+                    int hour = Integer.parseInt(time[0]);
+                    int min = Integer.parseInt(time[1]);
+                    if(min+minFocused>59){
+                        stat[2][hour] += 60 - min;
+                        hour++;
+                        min = min + minFocused - 60;
+                        if (hour < 24){
+                            stat[2][hour] += min;
+                        }
+                    }else{
+                        stat[2][hour] += minFocused;
+                    }
+
+
+                }
+            }
+        }
+        return stat;
+    }
+
+    private ArrayList<FocusTask> readFocusTask(Task<DataSnapshot> task){
+        //get current user id
+        String userID = ((MainActivity)getActivity()).getUid();
+        DataSnapshot focusTaskTable = task.getResult().child("Focus").child(userID);
+        //read all focus tasks
+        ArrayList<FocusTask> focusTasks = new ArrayList<>();
+        for(DataSnapshot ds : focusTaskTable.getChildren()) {
+            String taskName = ds.child("taskName").getValue(String.class);
+            String date = ds.child("date").getValue(String.class);
+            Integer minutesFocused = ds.child("minutesFocused").getValue(Integer.class);
+            String taskID = ds.child("taskID").getValue(String.class);
+            String time = ds.child("time").getValue(String.class);
+            String uid = ds.child("uid").getValue(String.class);
+            focusTasks.add(new FocusTask(uid, taskName, taskID, minutesFocused, date, time));
+        }
+        return focusTasks;
+    }
+
+    //get the number of all tasks and finished tasks for each day in the last numDays
+    private ArrayList<DateTask> readDateTask(Task<DataSnapshot> task, int numDays){
+        //get current user id
+        String userID = ((MainActivity)getActivity()).getUid();
+        DataSnapshot dateTaskTable = task.getResult().child("DateTaskTable").child(userID);
+        //read event/date data
+        ArrayList<DateTask> dateTasks = new ArrayList<>();
+        ArrayList<String> lastDays = new ArrayList<String>();
+        //last14Days.get(13) is today, last14Days.get(12) is yesterday and so on
+        for (int i = 0; i < numDays; i++) {
+            int j = numDays - 1 - i;
+            lastDays.add(getCalculatedDate("dd-MM-yyyy" , -j));
+        }
+        for (int i = 0; i < lastDays.size(); i++) {
+            if(dateTaskTable.hasChild(lastDays.get(i))){
+                Object value = dateTaskTable.child(lastDays.get(i)).getValue();
+                Gson gson = new GsonBuilder().setDateFormat("MMM dd, yyyy HH:mm:ss").create();
+                DateTask dateTask = gson.fromJson(value.toString(), DateTask.class);
+                if(dateTask==null || dateTask.getTasks()==null){
+                    Toast.makeText(getContext(), "read data == null", Toast.LENGTH_SHORT).show();
+                }
+                dateTasks.add(dateTask);
+            }else {
+                DateTask dateTask = new DateTask();
+                dateTask.setAllTaskNum(0);
+                dateTask.setFinishedTaskNum(0);
+                dateTasks.add(dateTask);
+            }
+        }
+        return dateTasks;
+
     }
 
     private void drawPieChart(PieChart pieChart, String pieChartLabel, int finished, int unfinished){
@@ -428,7 +475,7 @@ public class AnalysisFragment extends Fragment {
                 //last 24 hours
                 arr.add(new BarEntry(i, y[i]));
             }
-            if(barNumber == 7 && barChartLabel.endsWith("this period")){
+            if(barNumber == 7 && barChartLabel.contains("this period")){
                 xAxisLabel.add(getCalculatedDate("EEE" , -j));
             }else if (barNumber == 7){
                 xAxisLabel.add(getCalculatedDate("dd-MMM" , -j));
