@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
                 float value = Math.min(sensorEvent.values[0]*100,40000);
                 int newValue = (int) (255f * value / maxValue);
 
-//                binding.getRoot().setBackgroundColor(Color.rgb(newValue,newValue,newValue));
+                binding.getRoot().setBackgroundColor(Color.rgb(newValue,newValue,newValue));
             }
 
             @Override
