@@ -16,6 +16,10 @@ public class DateTask implements Serializable{
     private int finishedTaskNum = 0;
     private String userID;
 
+    public DateTask(){
+
+    }
+
     public DateTask(Date date, String userID){
         this.date = date;
         this.userID = userID;
