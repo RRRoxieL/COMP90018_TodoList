@@ -6,48 +6,43 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.TextView;
-
-import com.example.todolist.ui.timer.TimerViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-
-
-
 import com.example.todolist.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
-    public static final int TYPE_LIGHT = 5;
 
     private ActivityMainBinding binding;
+
     private String uid;
-
-    private SensorManager sensorManager;
-    private Sensor lightSensor;
-    private SensorEventListener lightEventListener;
-//    private View root;
-    private float maxValue;
-
     public String getUid() {
         return uid;
     }
 
+    public static final int TYPE_LIGHT = 5;
+    private SensorManager sensorManager;
+    private Sensor lightSensor;
+    private SensorEventListener lightEventListener;
+    private float maxValue;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        // initialize light sensor
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         lightSensor = sensorManager.getDefaultSensor(TYPE_LIGHT);
         maxValue = lightSensor.getMaximumRange();
+
+        // listen to sensor data and change the background color accordingly
         lightEventListener = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent sensorEvent) {
@@ -62,13 +57,13 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-
+        // record user ID as user logging in
         TextView tv = findViewById(R.id.login_username);
         Bundle bundle = this.getIntent().getExtras();
         String str=bundle.getString("UID");
-
         uid = str;
 
+        // bottom navigation bar
         BottomNavigationView navView = findViewById(R.id.nav_view);
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_home, R.id.navigation_calendar, R.id.navigation_timer, R.id.navigation_analysis, R.id.navigation_profile)

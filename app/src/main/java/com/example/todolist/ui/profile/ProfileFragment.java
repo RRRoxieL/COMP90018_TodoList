@@ -1,12 +1,10 @@
 package com.example.todolist.ui.profile;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -42,14 +40,23 @@ public class ProfileFragment extends Fragment {
         ProfileViewModel profileViewModel =
                 new ViewModelProvider(this).get(ProfileViewModel.class);
 
-
         binding = FragmentProfileBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        // initialise firebase realtime database
         mDatabase = FirebaseDatabase.getInstance();
         mReference = mDatabase.getReference();
+
+        // get current user ID from MainActivity
         userID = ((MainActivity)getActivity()).getUid();
 
+        // define user information textview
+        userName = root.findViewById(R.id.userName);
+        gender = root.findViewById(R.id.gender);
+        email = root.findViewById(R.id.email);
+        password = root.findViewById(R.id.password);
+
+        // create navigation from logout button to login fragment
         logoutBtn = root.findViewById(R.id.logOut);
         logoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,23 +66,22 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        userName = root.findViewById(R.id.userName);
-        gender = root.findViewById(R.id.gender);
-        email = root.findViewById(R.id.email);
-        password = root.findViewById(R.id.password);
-
+        // read user data
         readUser();
 
         return root;
     }
 
+    // read user data from Firebase realtime database based on user ID
     private void readUser(){
         mReference.child("Users").child(userID).addValueEventListener(new ValueEventListener() {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                // get initial user value as a string
                 Object value = snapshot.getValue();
 
+                // parse string data
                 String[] userData = value.toString().split(",");
                 String[] parsed = userData;
                 for (int i = 0; i < 4; i++) {
