@@ -86,15 +86,18 @@ public class ProfileFragment extends Fragment {
                 Object value = snapshot.getValue();
 
                 // parse string data
-                String[] userData = value.toString().split(",");
-                String[] parsed = userData;
-                for (int i = 0; i < 4; i++) {
-                    parsed[i] = userData[i].split("=")[1];
+                if(value!=null){
+                    String[] userData = value.toString().split(",");
+                    String[] parsed = userData;
+                    for (int i = 0; i < 4; i++) {
+                        parsed[i] = userData[i].split("=")[1];
+                    }
+                    userName.setText(parsed[3].replace("}",""));
+                    gender.setText(parsed[1]);
+                    email.setText(parsed[2]);
+                    password.setText(parsed[0]);
                 }
-                userName.setText(parsed[3].replace("}",""));
-                gender.setText(parsed[1]);
-                email.setText(parsed[2]);
-                password.setText(parsed[0]);
+
             }
 
             @Override
