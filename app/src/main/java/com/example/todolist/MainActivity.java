@@ -39,16 +39,17 @@ public class MainActivity extends AppCompatActivity {
 
         // initialize light sensor
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        lightSensor = sensorManager.getDefaultSensor(TYPE_LIGHT);
+        lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
         maxValue = lightSensor.getMaximumRange();
 
         // listen to sensor data and change the background color accordingly
         lightEventListener = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent sensorEvent) {
-                float value = sensorEvent.values[0];
+                float value = Math.min(sensorEvent.values[0]*100,40000);
                 int newValue = (int) (255f * value / maxValue);
-                binding.getRoot().setBackgroundColor(Color.rgb(newValue,newValue,newValue));
+
+//                binding.getRoot().setBackgroundColor(Color.rgb(newValue,newValue,newValue));
             }
 
             @Override

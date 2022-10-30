@@ -378,32 +378,60 @@ public class HomeFragment extends Fragment {
         return dutyFinished==dutyAmount?
                 "All Finished, cheers!":"Finished Duties: "+dutyFinished+"/"+dutyAmount;
     }
-
     private void bindDateTask(){
         ValueEventListener valueEventListener = new ValueEventListener() {
+            /**
+             * when the data in database changed, read the data into dateTask and update view
+             * @param snapshot
+             */
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Object value = snapshot.getValue();
                 if (value != null) {
                     Gson gson = new GsonBuilder().setDateFormat("MMM dd, yyyy HH:mm:ss").create();
                     dateTask = gson.fromJson(value.toString(), DateTask.class);
-                    if (dateTask == null || dateTask.getTasks() == null) {
+                    if (dateTask == null) {
                         Toast.makeText(getContext(), "read data == null", Toast.LENGTH_SHORT).show();
-//                        saveData();
                     }
-//                    Toast.makeText(getContext(), dateTask.toString(), Toast.LENGTH_SHORT).show();
                     updateView();
                 }
 
-
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.w(TAG, "loadPost:onCancelled", error.toException());
             }
         };
+
         databaseTable.child(currentDate).addValueEventListener(valueEventListener);
+
     }
+//    private void bindDateTask(){
+//        ValueEventListener valueEventListener = new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                Object value = snapshot.getValue();
+//                if (value != null) {
+//                    Gson gson = new GsonBuilder().setDateFormat("MMM dd, yyyy HH:mm:ss").create();
+//                    dateTask = gson.fromJson(value.toString(), DateTask.class);
+//                    if (dateTask == null || dateTask.getTasks() == null) {
+//                        Toast.makeText(getContext(), "read data == null", Toast.LENGTH_SHORT).show();
+////                        saveData();
+//                    }
+////                    Toast.makeText(getContext(), dateTask.toString(), Toast.LENGTH_SHORT).show();
+//                    updateView();
+//                }
+//
+//
+//            }
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//                Log.w(TAG, "loadPost:onCancelled", error.toException());
+//            }
+//        };
+//        databaseTable.child(currentDate).addValueEventListener(valueEventListener);
+//    }
 
     private void removeBindDateTask(){
         if(valueEventListener!=null && currentDate!=null){

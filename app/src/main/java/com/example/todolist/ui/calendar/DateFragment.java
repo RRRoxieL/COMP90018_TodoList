@@ -228,6 +228,7 @@ public class DateFragment extends Fragment {
         };
 
         databaseTable.child(dateString).addValueEventListener(valueEventListener);
+
     }
 
 

@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -165,7 +166,7 @@ public class TomToolkit {
      * @param context: the context where the error messge shown
      * @param imageView: the place fetched picture to be shown
      */
-    public static void getPicture(String filename,Context context,ImageView imageView){
+    public static void getPicture(String filename,Context context,ImageView imageView, Object[] data){
         StorageReference fileRef = fireStorage.child("image/" + filename);
         File tempimg = null;
         if(true){
@@ -179,6 +180,9 @@ public class TomToolkit {
                         imageView.setImageBitmap(bitmap);
                         imageView.setClickable(true);
                         imageView.setLongClickable(true);
+                        imageView.setTag("not_empty");
+                        data[0] = bitmap;
+
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -196,8 +200,6 @@ public class TomToolkit {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-
         }
     }
 
@@ -244,12 +246,12 @@ public class TomToolkit {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 Log.d(TAG,"save "+filename+" to database");
-                Toast.makeText(context, "success!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "picture upload success!", Toast.LENGTH_SHORT).show();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(context, "failed!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "picture upload failed!", Toast.LENGTH_SHORT).show();
             }
         }).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override

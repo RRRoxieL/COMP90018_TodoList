@@ -13,6 +13,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -43,7 +44,9 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -77,6 +80,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
+import java.util.zip.Inflater;
 
 /**
  * this is a manager dialog for a specific task.
@@ -90,7 +94,7 @@ public class PopOutTaskDialog extends DialogFragment {
     private ActivityResultLauncher<Intent> localActivityResultLauncher;
     private ActivityResultLauncher<Intent> cameraActivityResultLauncher;
     private Uri imageUri;
-    private Object imgData;
+    private Object[] imgData = new Object[1];
     private String userID;
     /**
      * constructor without a task
@@ -135,11 +139,11 @@ public class PopOutTaskDialog extends DialogFragment {
                 int resultCode = result.getResultCode();
                 if (resultCode == RESULT_OK && data != null) {
                     imageUri = data.getData();
-                    imgData = imageUri;
-                    actionReceivePic(imageUri,imageUri);
+                    imgData[0] = imageUri;
+                    actionReceivePic(imgData,imageUri);
                 }else if(resultCode == RESULT_CANCELED || data == null){
                     imageUri = null;
-                    imgData = null;
+                    imgData[0] = null;
                     actionReceivePic(imgData,imageUri);
                 }
             }
@@ -150,12 +154,12 @@ public class PopOutTaskDialog extends DialogFragment {
                 Intent data = result.getData();
                 int resultCode = result.getResultCode();
                 if (resultCode == RESULT_OK && data != null) {
-                    imgData = (Bitmap)data.getExtras().get("data");
+                    imgData[0] = (Bitmap)data.getExtras().get("data");
                     imageUri = Uri.parse("default");
                     actionReceivePic(imgData,imageUri);
                 }else if(resultCode == RESULT_CANCELED || data == null){
                     imageUri = null;
-                    imgData = null;
+                    imgData[0] = null;
                     actionReceivePic(imgData,imageUri);
                 }
             }
@@ -168,7 +172,7 @@ public class PopOutTaskDialog extends DialogFragment {
      * @param data: image data, can be Uri or Bitmap
      * @param imageUri: the imageUri field, null stands for no data.
      */
-    private void actionReceivePic(Object data,Uri imageUri){
+    private void actionReceivePic(Object[] data,Uri imageUri){
         //if the data collected is not null, save the image to database and set the imageview to the image
         ImageView imageView = (ImageView)getView().findViewById(R.id.img);
         if(imageView==null || imageUri==null){
@@ -181,8 +185,13 @@ public class PopOutTaskDialog extends DialogFragment {
      * save the picture to database if imageUri field is not null
      * @param data: the picture data to be stored, can be Uri or Bitmap
      */
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private void savePicture(Object data){
         if(imageUri!=null){
+            if(task==null){
+                Toast.makeText(getContext(),binding.importance.getSelectedItem().toString(),Toast.LENGTH_LONG);
+                task = new Task(getActivity(),date,binding.timepicker.getHour(),binding.timepicker.getMinute(),binding.nameText.getText().toString(),binding.descrptText.getText().toString(),binding.importance.getSelectedItem().toString(),null);
+            }
             String filename = createFileName();
             task.setPicPath(filename);
             if(data instanceof Uri){
@@ -200,16 +209,20 @@ public class PopOutTaskDialog extends DialogFragment {
      * @param data: the picture data, can be Uri or Bitmap or null
      * @param imageView: the imageview to be set
      */
-    private void setPicture(Object data, ImageView imageView){
-        if(data instanceof Uri){
-            Uri dataUri = (Uri) data;
-            imageView.setImageURI(dataUri);
-        }else if(data instanceof Bitmap){
-            Bitmap dataBitmap = (Bitmap) data;
-            imageView.setImageBitmap(dataBitmap);
-        }else if(data == null){
+    private void setPicture(Object[] data, ImageView imageView){
+        if(data == null || data[0] == null){
             imageView.setImageResource(R.drawable.ic_frag_import);
+            imageView.setTag(null);
+        }else if(data[0] instanceof Bitmap){
+            Bitmap dataBitmap = (Bitmap) data[0];
+            imageView.setImageBitmap(dataBitmap);
+            imageView.setTag("not_empty");
+        }else if(data[0] instanceof Uri){
+            Uri dataUri = (Uri) data[0];
+            imageView.setImageURI(dataUri);
+            imageView.setTag("not_empty");
         }
+
     }
 
 
@@ -246,7 +259,7 @@ public class PopOutTaskDialog extends DialogFragment {
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View v) {
-                savePicture(imgData);
+                savePicture(imgData[0]);
                 setTask();
                 TomToolkit.sendMessage(handler,task,GlobalValues.BUNDLE_INFO_ACTIONTAG,GlobalValues.ACTIONTAG_ADD);
                 dismiss();
@@ -270,34 +283,61 @@ public class PopOutTaskDialog extends DialogFragment {
             @SuppressLint("UseCompatLoadingForDrawables")
             @Override
             public boolean onLongClick(View v) {
-                PopupMenu popupMenu = new PopupMenu(getContext(),binding.img);
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        String title = item.getTitle().toString();
-                        switch (title){
-                            case "FROM LOCAL FILE":
-                                Intent galleryIntent = new Intent();
-                                galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
-                                galleryIntent.setType("image/*");
-                                localActivityResultLauncher.launch(galleryIntent);
-                                break;
-                            case "FROM CAMERA":
-                                Intent galleryIntent1 = new Intent();
-                                galleryIntent1.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-                                cameraActivityResultLauncher.launch(galleryIntent1);
-                                break;
-                        }
-                        return false;
-                    }
-                });
-                popupMenu.inflate(R.menu.popout_img_selector);
-                popupMenu.show();
+                popoutMenu();
                 return true;
             }
         });
 
+        binding.img.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(binding.img.getTag()==null){
+                    popoutMenu();
+                }else{
+                    View imgBigView = inflater.inflate(R.layout.image_layout,container);
+                    PopupWindow popupWindow = new PopupWindow(imgBigView,LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT,true);
+                    ImageView imgView = (ImageView) imgBigView.findViewById(R.id.img_big);
+                    setPicture(imgData,imgView);
+                    imgView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            popupWindow.dismiss();
+                        }
+                    });
+                    popupWindow.showAtLocation(v.getRootView(),Gravity.CENTER,0,0);
+
+                }
+            }
+        });
+
+
         return root;
+    }
+
+    private void popoutMenu(){
+        PopupMenu popupMenu = new PopupMenu(getContext(),binding.img);
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                String title = item.getTitle().toString();
+                switch (title){
+                    case "FROM LOCAL FILE":
+                        Intent galleryIntent = new Intent();
+                        galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
+                        galleryIntent.setType("image/*");
+                        localActivityResultLauncher.launch(galleryIntent);
+                        break;
+                    case "FROM CAMERA":
+                        Intent galleryIntent1 = new Intent();
+                        galleryIntent1.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+                        cameraActivityResultLauncher.launch(galleryIntent1);
+                        break;
+                }
+                return false;
+            }
+        });
+        popupMenu.inflate(R.menu.popout_img_selector);
+        popupMenu.show();
     }
 
     /**
@@ -323,7 +363,7 @@ public class PopOutTaskDialog extends DialogFragment {
             binding.timepicker.setMinute(task.getMinute());
             binding.descrptText.setText(task.getDescription());
             if(task.getPicPath()!=null){
-                TomToolkit.getPicture(task.getPicPath(),getContext(),binding.img);
+                TomToolkit.getPicture(task.getPicPath(),getContext(),binding.img,imgData);
             }
             if(task.getImportance()!=null){
                 int position = Task.Importance.getPosition(task.getImportance());
