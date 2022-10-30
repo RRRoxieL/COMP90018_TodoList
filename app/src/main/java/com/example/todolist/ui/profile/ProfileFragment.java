@@ -56,13 +56,17 @@ public class ProfileFragment extends Fragment {
         email = root.findViewById(R.id.email);
         password = root.findViewById(R.id.password);
 
-        // create navigation from logout button to login fragment
+        // logout the user
         logoutBtn = root.findViewById(R.id.logOut);
         logoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // navigate to the login fragment
                 NavController controller = Navigation.findNavController(view);
                 controller.navigate(R.id.action_logoutFragment_to_loginFragment);
+
+                // clear user data
+                clearUser();
             }
         });
 
@@ -98,6 +102,15 @@ public class ProfileFragment extends Fragment {
 
             }
         });
+    }
+
+    // clear user data
+    private void clearUser(){
+        userID = "";
+        userName.clearComposingText();
+        gender.clearComposingText();
+        email.clearComposingText();
+        password.clearComposingText();
     }
 
     @Override
