@@ -6,6 +6,8 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.view.Window;
 import android.widget.TextView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
         return uid;
     }
 
-    public static final int TYPE_LIGHT = 5;
+//    public static final int TYPE_LIGHT = 5;
     private SensorManager sensorManager;
     private Sensor lightSensor;
     private SensorEventListener lightEventListener;
@@ -39,14 +41,15 @@ public class MainActivity extends AppCompatActivity {
 
         // initialize light sensor
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        lightSensor = sensorManager.getDefaultSensor(TYPE_LIGHT);
+        lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
         maxValue = lightSensor.getMaximumRange();
 
         // listen to sensor data and change the background color accordingly
         lightEventListener = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent sensorEvent) {
-                float value = sensorEvent.values[0];
+                // adapt the luminosity value to real environment
+                float value = Math.min(sensorEvent.values[0]*200, 40000);
                 int newValue = (int) (255f * value / maxValue);
                 binding.getRoot().setBackgroundColor(Color.rgb(newValue,newValue,newValue));
             }
