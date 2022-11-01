@@ -169,7 +169,7 @@ public class HomeFragment extends Fragment {
                     Toast.makeText(getContext(),Boolean.toString(dateTask.deleteTask(data.getString("ID"))), Toast.LENGTH_SHORT).show();
                 }else if(actionTag=='u'){
                     Task task = (Task)data.getSerializable("task");
-                    Toast.makeText(getContext(),"handler report task: "+task.toString(),Toast.LENGTH_LONG).show();
+//                    Toast.makeText(getContext(),"handler report task: "+task.toString(),Toast.LENGTH_LONG).show();
                     dateTask.downTask(task);
                 }
 //                Toast.makeText(getContext(), dateTask.toString(), Toast.LENGTH_SHORT).show();

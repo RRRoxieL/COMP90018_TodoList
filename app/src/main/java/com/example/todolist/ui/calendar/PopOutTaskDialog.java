@@ -9,15 +9,19 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -328,6 +332,9 @@ public class PopOutTaskDialog extends DialogFragment {
                         localActivityResultLauncher.launch(galleryIntent);
                         break;
                     case "FROM CAMERA":
+                        if(ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED){
+                            ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.CAMERA},101);
+                        }
                         Intent galleryIntent1 = new Intent();
                         galleryIntent1.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
                         cameraActivityResultLauncher.launch(galleryIntent1);

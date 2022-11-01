@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         // define the system brightness level
         maxBrightness = 0.9f;
         midBrightness = 0.6f;
-        minBrightness = 0.3f;
+        minBrightness = 0.1f;
 
         // listen to sensor data and change the system brightness accordingly
         lightEventListener = new SensorEventListener() {
