@@ -209,6 +209,7 @@
                             android:background="#01e1c6"
                             android:text="Log Out"
                             android:textColor="#FFFFFF"
+                            android:textSize="16sp"
                             android:textStyle="bold"
                             tools:ignore="TouchTargetSizeCheck,TextContrastCheck" />
 

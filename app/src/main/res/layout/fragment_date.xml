@@ -10,18 +10,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
         <TextView
             android:id="@+id/dateText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="30dp"
-            android:textStyle="bold"
-            android:text="Title part"
-            android:paddingLeft="20dp"
-            android:paddingVertical="10dp"
-            android:textColor="@color/white"
             android:background="@color/teal_200"
-            />
+            android:paddingVertical="10dp"
+            android:paddingLeft="20dp"
+            android:text="Title part"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            android:textStyle="bold" />
 
         <ScrollView
             android:layout_width="match_parent"
