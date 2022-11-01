@@ -40,6 +40,7 @@ public class TimerFragment extends Fragment implements ServiceCallBack {
 
         try {
             this.taskName = getArguments().getString("taskName");
+            this.timerViewModel.setTaskName(taskName);
             this.taskID = getArguments().getString("taskID");
 
             if (taskName != null) {
@@ -56,8 +57,11 @@ public class TimerFragment extends Fragment implements ServiceCallBack {
         // Set widgets' visibility according to timer's status
         timerViewModel.getTime();
         if (timerViewModel.isStart()) {
+            binding.taskNameText.setText(this.timerViewModel.getTaskName());
             binding.startBtnTimer.setVisibility(View.INVISIBLE);
             if (timerViewModel.isPause()) {
+                binding.taskNameText.setText(this.timerViewModel.getTaskName());
+                binding.timeText.setText(timerViewModel.getTimeText());
                 binding.pauseBtnTimer.setVisibility(View.INVISIBLE);
             } else {
                 binding.resumeBtnTimer.setVisibility(View.INVISIBLE);
@@ -102,6 +106,7 @@ public class TimerFragment extends Fragment implements ServiceCallBack {
                 // Stop service
                 getActivity().stopService(new Intent(getActivity(), TimerService.class));
                 timerViewModel.resetTime();
+                timerViewModel.setStart(false);
                 resetUI();
             }
         });

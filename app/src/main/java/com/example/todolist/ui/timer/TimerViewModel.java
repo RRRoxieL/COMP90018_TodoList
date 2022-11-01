@@ -17,6 +17,7 @@ public class TimerViewModel extends ViewModel {
     public int progress;
     private boolean isStart;
     private boolean isPause;
+    private String taskName;
 
     public void setDeafultTime(int time) {
         deafultTime = time;
@@ -119,4 +120,11 @@ public class TimerViewModel extends ViewModel {
         Log.d(TAG, "cleared");
     }
 
+    public String getTaskName() {
+        return taskName;
+    }
+
+    public void setTaskName(String taskName) {
+        this.taskName = taskName;
+    }
 }
