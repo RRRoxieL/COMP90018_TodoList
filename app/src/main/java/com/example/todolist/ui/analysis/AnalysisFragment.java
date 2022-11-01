@@ -108,7 +108,7 @@ public class AnalysisFragment extends Fragment {
                             drawLineChart(binding.lineChart, "Workload trend last 7 days", period, workload);
 
                             //draw bar chart2
-                            drawBarChart(binding.barChart1, "Yesterday 24h focus time distribution", 24, yesterdayFocusDistribution);
+                            drawBarChart(binding.barChart1, "Yesterday 24h focus time(min) distribution", 24, yesterdayFocusDistribution);
                         }
                     }
                 });
@@ -233,7 +233,7 @@ public class AnalysisFragment extends Fragment {
 
 
                             //draw bar chart1
-                            drawBarChart(binding.barChart1, "Yesterday 24h focus time distribution", 24, yesterdayFocusDistribution);
+                            drawBarChart(binding.barChart1, "Yesterday 24h focus time(min) distribution", 24, yesterdayFocusDistribution);
                         }
                     }
                 });
@@ -279,38 +279,42 @@ public class AnalysisFragment extends Fragment {
             int j = numDays - 1 - i;
             lastDays.add(getCalculatedDate("dd-MM-yyyy" , -j));
         }
+
         String yesterdayDate = lastDays.get(lastDays.size()-2);
         int[][] stat = new int[3][];
         stat[0] = new int[lastDays.size()];//FocusMin
         stat[1] = new int[lastDays.size()];//FocusNum
         stat[2] = new int[24];//yesterday 24h distribution
 
-        for (int i = 0; i < focusTasks.size(); i++) {
+        for (int j = 0; j < lastDays.size(); j++) {
             //get focus min and focus number for each day in the last 14 days
-            for (int j = 0; j < lastDays.size(); j++) {
+            for (int i = 0; i < focusTasks.size(); i++) {
                 if(focusTasks.get(i).getDate().equals(lastDays.get(j))){
                     stat[0][j] += focusTasks.get(i).getMinutesFocused();
                     stat[1][j] ++;
                 }
-                //get yesterday 24h focus time distribution
-                if(focusTasks.get(i).getDate().equals(yesterdayDate)){
-                    int minFocused = focusTasks.get(i).getMinutesFocused();
-                    String[] time = focusTasks.get(i).getTime().split(":");
-                    int hour = Integer.parseInt(time[0]);
-                    int min = Integer.parseInt(time[1]);
-                    if(min+minFocused>59){
-                        stat[2][hour] += 60 - min;
-                        hour++;
-                        min = min + minFocused - 60;
-                        if (hour < 24){
-                            stat[2][hour] += min;
-                        }
-                    }else{
-                        stat[2][hour] += minFocused;
+
+            }
+        }
+        for (int i = 0; i < focusTasks.size(); i++) {
+            //get yesterday 24h focus time distribution
+            if(focusTasks.get(i).getDate().equals(yesterdayDate)){
+                int minFocused = focusTasks.get(i).getMinutesFocused();
+                String[] time = focusTasks.get(i).getTime().split(":");
+                int hour = Integer.parseInt(time[0]);
+                int min = Integer.parseInt(time[1]);
+                if(min+minFocused>59){
+                    stat[2][hour] += 60 - min;
+                    hour++;
+                    min = min + minFocused - 60;
+                    if (hour < 24){
+                        stat[2][hour] += min;
                     }
-
-
+                }else{
+                    stat[2][hour] += minFocused;
                 }
+
+
             }
         }
         return stat;
@@ -488,7 +492,7 @@ public class AnalysisFragment extends Fragment {
         BarDataSet barDataSet = new BarDataSet(arr, barChartLabel);
         //barDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
         barDataSet.setValueTextColor(Color.BLACK);
-        barDataSet.setValueTextSize(16f);
+        barDataSet.setValueTextSize(12f);
         barDataSet.setValueFormatter(new DefaultValueFormatter(0));
 
         BarData barData = new BarData(barDataSet);
